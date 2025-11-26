@@ -1,0 +1,30 @@
+providers:
+  - name: openai
+    kind: llm
+    auth_profile: OPENAI_DEFAULT
+    api_base: https://api.openai.com/v1
+    adapter: openai_adapter
+
+  - name: gemini
+    kind: llm
+    auth_profile: GEMINI_DEFAULT
+    api_base: https://generativelanguage.googleapis.com
+    adapter: gemini_adapter
+
+  - name: anthropic
+    kind: llm
+    auth_profile: ANTHROPIC_DEFAULT
+    api_base: https://api.anthropic.com
+    adapter: anthropic_adapter
+
+  - name: deepseek
+    kind: llm
+    auth_profile: DEEPSEEK_DEFAULT
+    api_base: https://api.deepseek.com
+    adapter: deepseek_adapter
+
+  - name: qwen
+    kind: llm
+    auth_profile: QWEN_DEFAULT
+    api_base: <fill-here>
+    adapter: qwen_adapter

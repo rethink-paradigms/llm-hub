@@ -1,0 +1,49 @@
+projects:
+  memory:
+    envs:
+      dev:
+        llm:
+          llm.preprocess:
+            provider: openai
+            model_id: gpt-4.1-mini
+            mode: chat
+            auth_profile: OPENAI_DEFAULT
+
+          llm.mem0:
+            provider: openai
+            model_id: gpt-4.1
+            mode: chat
+            auth_profile: OPENAI_DEFAULT
+
+          llm.openmemory:
+            provider: anthropic
+            model_id: claude-3-5-sonnet
+            mode: chat
+            auth_profile: ANTHROPIC_DEFAULT
+
+          llm.embedding.default:
+            provider: openai
+            model_id: text-embedding-3-large
+            mode: embedding
+            auth_profile: OPENAI_DEFAULT
+
+        storage:
+          store.vector.facts:
+            kind: vector
+            backend: pgvector
+            dsn: postgres://user:pass@host:5432/mem0
+
+          store.vector.cognitive:
+            kind: vector
+            backend: sqlite
+            dsn: file:openmemory.db
+
+          store.sql.core:
+            kind: sql
+            backend: postgres
+            dsn: postgres://user:pass@host:5432/resource_orchestrator
+
+          store.blob.raw:
+            kind: blob
+            backend: local_fs
+            dsn: ./data/raw_events
