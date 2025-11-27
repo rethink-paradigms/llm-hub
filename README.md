@@ -1,44 +1,44 @@
-# Resource Orchestrator
+# LLM Orchestrator (PLAN-A)
 
-Central service to resolve logical roles (e.g. `llm.preprocess`, `store.vector.facts`) into concrete model/storage configs per project + environment.
+Core engine for resolving logical LLM roles into concrete provider/model calls with a single `run()` API.
 
-## Setup
+## Install Requirements
 
-1.  **Install Dependencies**:
-    ```bash
-    pip install pyyaml pydantic
-    ```
-
-2.  **Environment Variables**:
-    You must set API keys for the auth profiles defined in `config/providers.yaml`.
-    
-    ```bash
-    export RO_AUTH_OPENAI_DEFAULT_API_KEY="sk-..."
-    export RO_AUTH_GEMINI_DEFAULT_API_KEY="AIza..."
-    export RO_AUTH_ANTHROPIC_DEFAULT_API_KEY="sk-ant-..."
-    ```
-
-## Usage
-
-### CLI
-
-**Resolve LLM Role**:
 ```bash
-python3 -m src.sp8_cli.cli resolve-llm --project memory --env dev --role llm.preprocess
+pip install openai pydantic pyyaml
 ```
 
-**Resolve Storage Role**:
+## Configure Auth
+
+Set env vars for each auth profile referenced in your config (profile names are uppercased and sanitized):
+
 ```bash
-python3 -m src.sp8_cli.cli resolve-store --project memory --env dev --role store.vector.facts
+export ORCH_AUTH_OPENAI_DEFAULT_API_KEY="sk-..."
 ```
 
-**Export Config**:
-```bash
-python3 -m src.sp8_cli.cli export-config --project memory --env dev --format env
+## Write Config
+
+Place a `llm_orchestrator.yaml` with providers and role bindings. Example (`orchestrator/examples/minimal_app/llm_orchestrator.yaml`):
+
+```yaml
+project: my_project
+env: dev
+
+providers:
+  openai:
+    auth_profile: openai_default
+    api_base: https://api.openai.com/v1
+
+roles:
+  llm.preprocess:
+    provider: openai
+    model: gpt-4.1-mini
 ```
 
-## Adding Providers
+## Run the Minimal Example
 
-1.  Add entry to `config/providers.yaml`.
-2.  Implement adapter in `src/sp3_model_catalog/adapters.py` (if new type).
-3.  Set `RO_AUTH_<PROFILE>_API_KEY`.
+```bash
+python orchestrator/examples/minimal_app/llm_bindings.py
+```
+
+The script loads the YAML config, resolves the `llm.preprocess` role, and executes a chat request via the OpenAI adapter.

@@ -1,15 +1,19 @@
-from typing import List, Dict, Any, Optional, Union
-from pydantic import BaseModel
+from typing import Any, Literal, Optional
+
+from pydantic import BaseModel, Field
+
 
 class Message(BaseModel):
-    role: str
+    role: Literal["system", "user", "assistant"]
     content: str
+
 
 class LLMResponse(BaseModel):
     content: str
-    raw: Any
+    raw: Any = Field(..., description="Full provider-specific response payload")
     provider: str
     model: str
+
 
 class ResolvedLLMConfig(BaseModel):
     provider: str
