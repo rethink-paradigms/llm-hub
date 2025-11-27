@@ -26,7 +26,11 @@ def resolve_role(config: RuntimeConfig, role: str, params_override: Optional[Dic
         raise UnknownRoleError(f"Role '{role}' not found and no defaults configured.")
 
     if base.provider not in config.providers:
-        raise UnknownProviderError(f"Provider '{base.provider}' referenced by role '{role}' is not defined in providers.")
+        available = ", ".join(sorted(config.providers.keys()))
+        raise UnknownProviderError(
+            f"Provider '{base.provider}' referenced by role '{role}' is not defined in providers. "
+            f"Available providers: {available}"
+        )
 
     params = {**base.params, **(params_override or {})}
 
