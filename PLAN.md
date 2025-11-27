@@ -30,6 +30,8 @@ This doc is the **single source of truth** for the `llmhub_runtime` package.
 ### Core dependencies
 
 - `any-llm`
+Here are the docs for any-llm:  https://mozilla-ai.github.io/any-llm/quickstart/
+REFER THEM FOR IMPLEMENTATION
   - Used for all provider-specific LLM calls (chat/completion & embeddings).
   - Runtime must **not** re-implement SDK integrations; it should use `any-llm`.
 - `PyYAML`
