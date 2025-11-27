@@ -1,0 +1,31 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "llmhub-runtime"
+version = "0.1.0"
+description = "A lightweight runtime for LLMHub that delegates to any-llm"
+readme = "README.md"
+authors = [
+  { name = "LLMHub Team", email = "hello@llmhub.ai" },
+]
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+requires-python = ">=3.10"
+dependencies = [
+    "any-llm-sdk>=1.2.0",
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/llmhub/llmhub-runtime"
+"Bug Tracker" = "https://github.com/llmhub/llmhub-runtime/issues"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["llmhub_runtime"]
