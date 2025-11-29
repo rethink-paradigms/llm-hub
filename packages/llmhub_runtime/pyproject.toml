@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "llmhub-runtime"
-version = "1.0.2"
+version = "1.0.3"
 description = "A lightweight runtime for LLMHub that delegates to any-llm"
 readme = "README.md"
 authors = [
