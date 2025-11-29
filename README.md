@@ -102,7 +102,7 @@ The catalog is used by:
 ### From PyPI (when published)
 
 ```bash
-pip install llmhub llmhub-runtime
+pip install rethink-llmhub llmhub-runtime
 ```
 
 ### From source (current development)
@@ -578,6 +578,51 @@ Contributions are welcome! Key areas to explore:
 - `packages/llmhub/src/llmhub/catalog/`: Catalog system
 - `packages/llmhub/src/llmhub/commands/`: CLI commands
 - `packages/llmhub/src/llmhub/generator_hook.py`: Generator logic (WIP)
+
+### Release Process
+
+The project uses an automated release script that handles version bumping, building, and PyPI uploads.
+
+**Setup:**
+1. Copy `.env.example` to `.env`
+2. Add your PyPI API tokens:
+   ```bash
+   PYPI_API_TOKEN=pypi-...
+   PYPI_TEST_API_TOKEN=pypi-...  # Optional, for TestPyPI
+   ```
+
+**Release both packages:**
+```bash
+# Bump patch version (0.1.5 -> 0.1.6)
+python scripts/release.py patch
+
+# Bump minor version (0.1.5 -> 0.2.0)
+python scripts/release.py minor
+
+# Bump major version (0.1.5 -> 1.0.0)
+python scripts/release.py major
+
+# Set specific version
+python scripts/release.py --version 0.2.0
+```
+
+**Release individual packages:**
+```bash
+# Release only llmhub-runtime
+python scripts/release.py patch --package llmhub-runtime
+
+# Release only llmhub
+python scripts/release.py minor --package llmhub
+```
+
+The script will:
+1. Load PyPI tokens from `.env` (or prompt if not found)
+2. Update version in `pyproject.toml` files
+3. Build distribution packages
+4. Verify package integrity
+5. Optionally upload to TestPyPI first
+6. Upload to production PyPI
+7. Provide git commands for tagging
 
 ---
 

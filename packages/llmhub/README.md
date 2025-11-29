@@ -76,7 +76,7 @@ response = hub.completion(role="llm.inference", messages=[...])
 ### Install from PyPI
 
 ```bash
-pip install llmhub
+pip install rethink-llmhub
 ```
 
 This automatically installs the required dependencies:
@@ -485,7 +485,7 @@ jobs:
       - uses: actions/setup-python@v2
         with:
           python-version: '3.10'
-      - run: pip install llmhub
+      - run: pip install rethink-llmhub
       - run: llmhub spec validate
       - run: llmhub env check
 ```

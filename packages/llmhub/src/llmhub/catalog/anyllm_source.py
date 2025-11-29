@@ -19,43 +19,24 @@ def load_anyllm_models() -> list[AnyLLMModel]:
     
     try:
         # Try to import any-llm
-        import any_llm
-        from any_llm import get_all_models, get_available_providers
+        from any_llm import list_models
         
-        # Get available providers (those with API keys configured)
-        try:
-            providers = get_available_providers()
-        except Exception:
-            # Fallback: try to get all providers and filter later
-            providers = []
+        # Try common providers
+        # any-llm will only return models if the API key is valid
+        common_providers = ["openai", "anthropic", "google", "mistral", "deepseek", "qwen", "groq", "together", "cohere", "ollama"]
         
-        # For each provider, get models
-        if not providers:
-            # If we can't get providers, try common ones
-            common_providers = ["openai", "anthropic", "google", "mistral", "deepseek", "qwen"]
-            for provider in common_providers:
-                try:
-                    provider_models = get_all_models(provider=provider)
-                    for model_id in provider_models:
-                        models.append(AnyLLMModel(
-                            provider=provider,
-                            model_id=model_id
-                        ))
-                except Exception:
-                    # Provider not available or no API key
-                    continue
-        else:
-            # Get models from available providers
-            for provider in providers:
-                try:
-                    provider_models = get_all_models(provider=provider)
-                    for model_id in provider_models:
-                        models.append(AnyLLMModel(
-                            provider=provider,
-                            model_id=model_id
-                        ))
-                except Exception:
-                    continue
+        for provider in common_providers:
+            try:
+                provider_models = list_models(provider=provider)
+                for model_id in provider_models:
+                    models.append(AnyLLMModel(
+                        provider=provider,
+                        model_id=model_id
+                    ))
+            except Exception as e:
+                # Provider not available, no API key, or API key invalid
+                # This is expected for providers that aren't configured
+                continue
                     
     except ImportError:
         # any-llm not installed or not available

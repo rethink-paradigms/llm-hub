@@ -6,8 +6,10 @@ and produces the final Catalog.
 """
 from datetime import datetime
 from typing import Optional
+from pathlib import Path
 import numpy as np
 from pydantic import BaseModel
+from dotenv import load_dotenv
 from .schema import FusedRaw, CanonicalModel, Catalog
 from .anyllm_source import load_anyllm_models
 from .modelsdev_source import fetch_modelsdev_json, normalize_modelsdev
@@ -29,6 +31,40 @@ class GlobalStats(BaseModel):
     arena_p40: float = 1100.0
     arena_p60: float = 1200.0
     arena_p80: float = 1300.0
+
+
+def _load_env_file() -> None:
+    """
+    Load .env file from common locations to populate environment variables.
+    
+    This function checks for .env files in:
+    1. Current working directory
+    2. Project root (by looking for llmhub.spec.yaml, .git, or pyproject.toml)
+    3. Home directory
+    
+    The function loads the first .env file it finds and stops.
+    This ensures API keys are available before any-llm tries to detect providers.
+    """
+    # Check current working directory first
+    cwd_env = Path.cwd() / ".env"
+    if cwd_env.exists():
+        load_dotenv(cwd_env, override=False)
+        return
+    
+    # Try to find project root and check there
+    current = Path.cwd()
+    for path in [current] + list(current.parents):
+        # Check for project markers
+        if (path / "llmhub.spec.yaml").exists() or (path / ".git").exists() or (path / "pyproject.toml").exists():
+            env_path = path / ".env"
+            if env_path.exists():
+                load_dotenv(env_path, override=False)
+                return
+    
+    # Finally check home directory
+    home_env = Path.home() / ".env"
+    if home_env.exists():
+        load_dotenv(home_env, override=False)
 
 
 def _compute_global_stats(fused: list[FusedRaw]) -> GlobalStats:
@@ -271,6 +307,7 @@ def build_catalog(
     Build the complete catalog from all sources.
     
     This is the main public entrypoint for catalog building. It:
+    0. Loads .env file if available (for API keys)
     1. Checks cache if force_refresh=False
     2. Loads data from all sources
     3. Fuses sources using ID mapping
@@ -286,6 +323,10 @@ def build_catalog(
     Returns:
         Catalog with all available models
     """
+    # 0. Try to load .env file from common locations
+    # This ensures any-llm can discover providers
+    _load_env_file()
+    
     # 1. Check cache
     if not force_refresh:
         cached = cache_module.load_cached_catalog(ttl_hours)
@@ -298,7 +339,14 @@ def build_catalog(
     
     if not anyllm_models:
         print("Warning: No models found from any-llm. Catalog will be empty.")
-        print("Make sure provider API keys are configured.")
+        print("")
+        print("Possible reasons:")
+        print("  1. No valid API keys found in environment")
+        print("  2. Check your .env file has valid API keys:")
+        print("     OPENAI_API_KEY=sk-proj-...")
+        print("     ANTHROPIC_API_KEY=sk-ant-...")
+        print("  3. API keys may be invalid or expired")
+        print("")
     
     print("Fetching models.dev metadata...")
     modelsdev_data = fetch_modelsdev_json()
