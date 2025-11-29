@@ -1,0 +1,44 @@
+{
+  "overall_text": {
+    "gpt-4o-2024-05-13": {
+      "rating": 1287.0,
+      "rating_q975": 1295.0,
+      "rating_q025": 1279.0
+    },
+    "gpt-4o-mini-2024-07-18": {
+      "rating": 1245.0,
+      "rating_q975": 1253.0,
+      "rating_q025": 1237.0
+    },
+    "claude-3-5-sonnet-20241022": {
+      "rating": 1322.0,
+      "rating_q975": 1330.0,
+      "rating_q025": 1314.0
+    },
+    "claude-3-5-haiku-20241022": {
+      "rating": 1260.0,
+      "rating_q975": 1268.0,
+      "rating_q025": 1252.0
+    },
+    "gemini-2.0-flash-exp": {
+      "rating": 1275.0,
+      "rating_q975": 1283.0,
+      "rating_q025": 1267.0
+    },
+    "gemini-1.5-pro": {
+      "rating": 1265.0,
+      "rating_q975": 1273.0,
+      "rating_q025": 1257.0
+    },
+    "gpt-4-turbo-2024-04-09": {
+      "rating": 1270.0,
+      "rating_q975": 1278.0,
+      "rating_q025": 1262.0
+    },
+    "claude-3-opus-20240229": {
+      "rating": 1268.0,
+      "rating_q975": 1276.0,
+      "rating_q025": 1260.0
+    }
+  }
+}

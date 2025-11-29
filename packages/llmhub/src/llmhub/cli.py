@@ -1,5 +1,5 @@
 import typer
-from .commands import setup_cmd, spec_cmd, runtime_cmd, env_cmd, test_cmd
+from .commands import setup_cmd, spec_cmd, runtime_cmd, env_cmd, test_cmd, catalog_cmd
 
 app = typer.Typer(help="LLMHub CLI — manage LLM specs and runtime configs")
 
@@ -35,8 +35,14 @@ env_app.command(name="check")(env_cmd.env_check)
 app.add_typer(env_app, name="env")
 
 # Test commands
-app.command(name="test")(test_cmd.test)
+app.command(name="test")(test_cmd.test_role)
 app.command(name="doctor")(test_cmd.doctor)
+
+# Catalog commands
+catalog_app = typer.Typer(help="Model catalog management")
+catalog_app.command(name="show")(catalog_cmd.catalog_show)
+catalog_app.command(name="refresh")(catalog_cmd.catalog_refresh)
+app.add_typer(catalog_app, name="catalog")
 
 
 # Default behaviour: no command

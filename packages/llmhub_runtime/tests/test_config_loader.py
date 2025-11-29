@@ -1,9 +1,10 @@
 import os
 import pytest
+from pathlib import Path
 from llmhub_runtime.config_loader import load_runtime_config, parse_runtime_config
 from llmhub_runtime.errors import ConfigError
 
-FIXTURE_PATH = "tests/fixtures/llmhub.yaml"
+FIXTURE_PATH = str(Path(__file__).parent / "fixtures" / "llmhub.yaml")
 
 def test_load_runtime_config_success():
     config = load_runtime_config(FIXTURE_PATH)

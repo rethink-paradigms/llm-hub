@@ -1,0 +1,6 @@
+# Ignore all TER files (JSON and MD)
+TER-*.json
+TER-*.md
+
+# Keep the README
+!README.md

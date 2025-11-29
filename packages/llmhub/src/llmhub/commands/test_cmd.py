@@ -15,7 +15,7 @@ from .. import ux
 console = Console()
 
 
-def test(
+def test_role(
     role: Optional[str] = typer.Option(None, "--role", help="Role to test"),
     prompt: Optional[str] = typer.Option(None, "--prompt", help="Prompt to send"),
     env_file: Optional[str] = typer.Option(None, "--env-file", help="Path to .env file"),

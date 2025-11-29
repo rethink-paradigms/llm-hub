@@ -1,11 +1,12 @@
 import os
 import pytest
+from pathlib import Path
 from unittest.mock import MagicMock, patch
 from llmhub_runtime.hub import LLMHub
 from llmhub_runtime.models import RuntimeConfig, ProviderConfig, RoleConfig, LLMMode
 from llmhub_runtime.errors import EnvVarMissingError
 
-FIXTURE_PATH = "tests/fixtures/llmhub.yaml"
+FIXTURE_PATH = str(Path(__file__).parent / "fixtures" / "llmhub.yaml")
 
 @pytest.fixture
 def mock_any_llm():
