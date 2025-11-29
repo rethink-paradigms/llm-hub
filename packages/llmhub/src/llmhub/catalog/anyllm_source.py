@@ -28,7 +28,9 @@ def load_anyllm_models() -> list[AnyLLMModel]:
         for provider in common_providers:
             try:
                 provider_models = list_models(provider=provider)
-                for model_id in provider_models:
+                for model_obj in provider_models:
+                    # Extract model ID from the Model object
+                    model_id = model_obj.id if hasattr(model_obj, 'id') else str(model_obj)
                     models.append(AnyLLMModel(
                         provider=provider,
                         model_id=model_id
