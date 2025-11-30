@@ -2,20 +2,28 @@
 
 <cite>
 **Referenced Files in This Document**
-- [README.md](file://README.md)
-- [packages/llmhub/README.md](file://packages/llmhub/README.md)
-- [packages/llmhub/src/llmhub/spec_models.py](file://packages/llmhub/src/llmhub/spec_models.py)
-- [packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py](file://packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py)
-- [packages/llmhub_runtime/tests/fixtures/llmhub.yaml](file://packages/llmhub_runtime/tests/fixtures/llmhub.yaml)
-- [packages/llmhub_runtime/src/llmhub_runtime/models.py](file://packages/llmhub_runtime/src/llmhub_runtime/models.py)
-- [packages/llmhub_runtime/src/llmhub_runtime/config_loader.py](file://packages/llmhub_runtime/src/llmhub_runtime/config_loader.py)
-- [packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/builder.py](file://packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/builder.py)
-- [packages/llmhub/src/llmhub/generator/sp6_weights/calculator.py](file://packages/llmhub/src/llmhub/generator/sp6_weights/calculator.py)
-- [packages/llmhub/src/llmhub/generator/sp7_scoring_engine/scorer.py](file://packages/llmhub/src/llmhub/generator/sp7_scoring_engine/scorer.py)
-- [packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/orchestrator.py](file://packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/orchestrator.py)
-- [packages/llmhub/src/llmhub/env_manager.py](file://packages/llmhub/src/llmhub/env_manager.py)
-- [packages/llmhub/src/llmhub/commands/env_cmd.py](file://packages/llmhub/src/llmhub/commands/env_cmd.py)
+- [README.md](file://README.md) - *Updated installation instructions*
+- [packages/cli/README.md](file://packages/cli/README.md) - *CLI package documentation*
+- [packages/runtime/README.md](file://packages/runtime/README.md) - *Runtime package documentation*
+- [packages/cli/src/llmhub_cli/spec_models.py](file://packages/cli/src/llmhub_cli/spec_models.py) - *Spec schema definitions*
+- [packages/cli/src/llmhub_cli/generator/spec/models.py](file://packages/cli/src/llmhub_cli/generator/spec/models.py) - *Spec parsing models*
+- [packages/runtime/src/llmhub_runtime/models.py](file://packages/runtime/src/llmhub_runtime/models.py) - *Runtime configuration models*
+- [packages/runtime/src/llmhub_runtime/config_loader.py](file://packages/runtime/src/llmhub_runtime/config_loader.py) - *Runtime configuration loading*
+- [packages/cli/src/llmhub_cli/generator/emitter/builder.py](file://packages/cli/src/llmhub_cli/generator/emitter/builder.py) - *Machine config builder*
+- [packages/cli/src/llmhub_cli/generator/selection/weights.py](file://packages/cli/src/llmhub_cli/generator/selection/weights.py) - *Weight calculation logic*
+- [packages/cli/src/llmhub_cli/generator/selection/scorer.py](file://packages/cli/src/llmhub_cli/generator/selection/scorer.py) - *Scoring engine*
+- [packages/cli/src/llmhub_cli/generator/selection/selector.py](file://packages/cli/src/llmhub_cli/generator/selection/selector.py) - *Selector orchestrator*
+- [packages/cli/src/llmhub_cli/env_manager.py](file://packages/cli/src/llmhub_cli/env_manager.py) - *Environment variable management*
+- [packages/cli/src/llmhub_cli/commands/env.py](file://packages/cli/src/llmhub_cli/commands/env.py) - *Environment commands*
+- [Makefile](file://Makefile) - *Updated build commands*
 </cite>
+
+## Update Summary
+**Changes Made**
+- Updated installation commands to reflect new package structure with `packages/cli` and `packages/runtime` directories
+- Modified file paths in code examples and references to match current repository structure
+- Updated section sources to reference correct file locations in the new package structure
+- Verified all configuration examples remain accurate with the updated package organization
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -71,8 +79,8 @@ Catalog --> Preferences
 ```
 
 **Diagram sources**
-- [packages/llmhub/src/llmhub/generator/spec.md](file://packages/llmhub/src/llmhub/generator/spec.md#L1-L93)
-- [packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/builder.py](file://packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/builder.py#L1-L113)
+- [packages/cli/src/llmhub_cli/generator/docs/PIPELINE.md](file://packages/cli/src/llmhub_cli/generator/docs/PIPELINE.md#L1-L39)
+- [packages/cli/src/llmhub_cli/generator/emitter/builder.py](file://packages/cli/src/llmhub_cli/generator/emitter/builder.py#L1-L113)
 
 ## Human-Facing Spec Configuration
 
@@ -122,8 +130,8 @@ SpecConfig --> SpecDefaults : has
 ```
 
 **Diagram sources**
-- [packages/llmhub/src/llmhub/spec_models.py](file://packages/llmhub/src/llmhub/spec_models.py#L59-L66)
-- [packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py](file://packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py#L58-L64)
+- [packages/cli/src/llmhub_cli/spec_models.py](file://packages/cli/src/llmhub_cli/spec_models.py#L54-L90)
+- [packages/cli/src/llmhub_cli/generator/spec/models.py](file://packages/cli/src/llmhub_cli/generator/spec/models.py#L58-L64)
 
 ### Project and Environment Settings
 
@@ -216,8 +224,8 @@ preferences:
 - **high**: Prioritizes quality and capabilities
 
 **Section sources**
-- [packages/llmhub/src/llmhub/spec_models.py](file://packages/llmhub/src/llmhub/spec_models.py#L13-L56)
-- [packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py](file://packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py#L18-L37)
+- [packages/cli/src/llmhub_cli/spec_models.py](file://packages/cli/src/llmhub_cli/spec_models.py#L13-L56)
+- [packages/cli/src/llmhub_cli/generator/spec/models.py](file://packages/cli/src/llmhub_cli/generator/spec/models.py#L18-L37)
 
 ## Machine-Facing Runtime Configuration
 
@@ -255,7 +263,7 @@ RuntimeConfig --> RoleDefaultsConfig : has
 ```
 
 **Diagram sources**
-- [packages/llmhub_runtime/src/llmhub_runtime/models.py](file://packages/llmhub_runtime/src/llmhub_runtime/models.py#L28-L41)
+- [packages/runtime/src/llmhub_runtime/models.py](file://packages/runtime/src/llmhub_runtime/models.py#L28-L41)
 
 ### Generated Configuration Structure
 
@@ -358,8 +366,8 @@ mode_params:
 ```
 
 **Section sources**
-- [packages/llmhub_runtime/src/llmhub_runtime/models.py](file://packages/llmhub_runtime/src/llmhub_runtime/models.py#L13-L41)
-- [packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/builder.py](file://packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/builder.py#L19-L88)
+- [packages/runtime/src/llmhub_runtime/models.py](file://packages/runtime/src/llmhub_runtime/models.py#L13-L41)
+- [packages/cli/src/llmhub_cli/generator/emitter/builder.py](file://packages/cli/src/llmhub_cli/generator/emitter/builder.py#L19-L88)
 
 ## Environment Variable Management
 
@@ -408,7 +416,7 @@ Success --> Continue["Continue Operation"]
 ```
 
 **Diagram sources**
-- [packages/llmhub/src/llmhub/env_manager.py](file://packages/llmhub/src/llmhub/env_manager.py#L46-L71)
+- [packages/cli/src/llmhub_cli/env_manager.py](file://packages/cli/src/llmhub_cli/env_manager.py#L46-L71)
 
 ### Strict Environment Validation
 
@@ -422,8 +430,8 @@ llmhub doctor --strict-env
 This ensures all required API keys are present before runtime execution.
 
 **Section sources**
-- [packages/llmhub/src/llmhub/env_manager.py](file://packages/llmhub/src/llmhub/env_manager.py#L46-L71)
-- [packages/llmhub/src/llmhub/commands/env_cmd.py](file://packages/llmhub/src/llmhub/commands/env_cmd.py#L44-L80)
+- [packages/cli/src/llmhub_cli/env_manager.py](file://packages/cli/src/llmhub_cli/env_manager.py#L46-L71)
+- [packages/cli/src/llmhub_cli/commands/env.py](file://packages/cli/src/llmhub_cli/commands/env.py#L44-L80)
 
 ## Model Selection and Preferences
 
@@ -446,7 +454,7 @@ RelaxedScore --> SelectAlternative["Select Alternative"]
 ```
 
 **Diagram sources**
-- [packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/orchestrator.py](file://packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/orchestrator.py#L16-L108)
+- [packages/cli/src/llmhub_cli/generator/selection/selector.py](file://packages/cli/src/llmhub_cli/generator/selection/selector.py#L1-L13)
 
 ### Weight Calculation
 
@@ -496,7 +504,7 @@ Score->>Select : Final selection
 ```
 
 **Diagram sources**
-- [packages/llmhub/src/llmhub/generator/sp7_scoring_engine/scorer.py](file://packages/llmhub/src/llmhub/generator/sp7_scoring_engine/scorer.py#L123-L165)
+- [packages/cli/src/llmhub_cli/generator/selection/scorer.py](file://packages/cli/src/llmhub_cli/generator/selection/scorer.py#L123-L165)
 
 ### Override Mechanisms
 
@@ -514,8 +522,8 @@ roles:
 ```
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/sp6_weights/calculator.py](file://packages/llmhub/src/llmhub/generator/sp6_weights/calculator.py#L51-L72)
-- [packages/llmhub/src/llmhub/generator/sp7_scoring_engine/scorer.py](file://packages/llmhub/src/llmhub/generator/sp7_scoring_engine/scorer.py#L123-L165)
+- [packages/cli/src/llmhub_cli/generator/selection/weights.py](file://packages/cli/src/llmhub_cli/generator/selection/weights.py#L51-L72)
+- [packages/cli/src/llmhub_cli/generator/selection/scorer.py](file://packages/cli/src/llmhub_cli/generator/selection/scorer.py#L123-L165)
 
 ## Configuration Workflow
 
@@ -563,7 +571,7 @@ RuntimeBuilder->>CLI : Generated llmhub.yaml
 ```
 
 **Diagram sources**
-- [packages/llmhub/src/llmhub/generator/spec.md](file://packages/llmhub/src/llmhub/generator/spec.md#L1-L93)
+- [packages/cli/src/llmhub_cli/generator/docs/PIPELINE.md](file://packages/cli/src/llmhub_cli/generator/docs/PIPELINE.md#L1-L39)
 
 ### Environment-Specific Configurations
 
@@ -581,7 +589,7 @@ llmhub generate --dry-run > llmhub.staging.yaml
 ```
 
 **Section sources**
-- [packages/llmhub/src/llmhub/commands/runtime_cmd.py](file://packages/llmhub/src/llmhub/commands/runtime_cmd.py#L13-L43)
+- [packages/cli/src/llmhub_cli/commands/runtime.py](file://packages/cli/src/llmhub_cli/commands/runtime.py#L13-L43)
 
 ## Best Practices
 
@@ -748,4 +756,4 @@ llmhub generate --force
 ```
 
 **Section sources**
-- [packages/llmhub/src/llmhub/commands/env_cmd.py](file://packages/llmhub/src/llmhub/commands/env_cmd.py#L44-L80)
+- [packages/cli/src/llmhub_cli/commands/env.py](file://packages/cli/src/llmhub_cli/commands/env.py#L44-L80)

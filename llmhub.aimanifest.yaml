@@ -1,0 +1,1123 @@
+# LLM Hub AI-Native Documentation Manifest
+# Format: .aimanifest v1.0
+# Purpose: Machine-first, structured capability documentation for AI agents
+
+manifest_version: "1.0"
+manifest_schema: "https://github.com/ai-native-docs/aimanifest/v1"
+
+# ============================================================================
+# SECTION 1: TOOL IDENTITY
+# ============================================================================
+
+tool_identity:
+  tool_name: llm-hub
+  package_names:
+    - rethink-llmhub
+    - rethink-llmhub-runtime
+  version: "1.0.3"
+  purpose: Config-driven LLM resolver and catalog system that abstracts provider/model selection into declarative configuration
+  categories:
+    - llm
+    - configuration-management
+    - provider-abstraction
+    - model-catalog
+  runtime:
+    language: python
+    min_version: "3.10"
+    platforms:
+      - linux
+      - darwin
+      - windows
+  documentation_url: https://github.com/rethink-paradigms/llm-hub
+  repository_url: https://github.com/rethink-paradigms/llm-hub
+
+# ============================================================================
+# SECTION 2: CAPABILITIES GRAPH
+# ============================================================================
+
+capabilities:
+  
+  # --- Runtime Capabilities ---
+  
+  - capability_id: runtime.resolve.role
+    intent: Map logical role name to concrete provider and model configuration
+    input_contract:
+      - name: role
+        type: string
+        required: true
+        description: Logical role identifier defined in configuration
+      - name: params_override
+        type: object
+        required: false
+        description: Optional parameter overrides for this specific call
+    output_contract:
+      - name: provider
+        type: string
+        description: Resolved provider name (e.g., "openai", "anthropic")
+      - name: model
+        type: string
+        description: Resolved model identifier (e.g., "gpt-4o", "claude-3-5-sonnet")
+      - name: mode
+        type: enum
+        description: LLM interaction mode
+        values: [chat, embedding, image, audio, tool]
+      - name: params
+        type: object
+        description: Merged parameters from role config and overrides
+    constraints:
+      - Role must exist in loaded configuration OR defaults must be configured
+      - Referenced provider must be defined in providers section
+      - Provider environment variable must be set (if strict_env enabled)
+    failure_modes:
+      - error: UnknownRoleError
+        condition: Role not found and no defaults configured
+      - error: UnknownProviderError
+        condition: Role references undefined provider
+    cost_model:
+      latency: <100ms (local resolution, no network calls)
+      compute: negligible
+  
+  - capability_id: runtime.execute.completion
+    intent: Execute LLM chat completion using role-based configuration
+    input_contract:
+      - name: role
+        type: string
+        required: true
+        description: Logical role identifier
+      - name: messages
+        type: array[object]
+        required: true
+        description: Chat message history with role/content structure
+        schema: "[{role: 'user'|'assistant'|'system', content: string}]"
+      - name: params_override
+        type: object
+        required: false
+        description: Optional parameter overrides (temperature, max_tokens, etc.)
+    output_contract:
+      - name: response
+        type: object
+        description: Provider-specific completion response (delegated to any-llm)
+    constraints:
+      - Requires any-llm-sdk library installed
+      - Requires valid provider API key in environment
+      - Role must resolve successfully (see runtime.resolve.role)
+      - Messages must follow provider-specific format constraints
+    failure_modes:
+      - error: UnknownRoleError
+        condition: Role resolution fails
+      - error: ImportError
+        condition: any-llm-sdk not installed
+      - error: ProviderAPIError
+        condition: Provider API call fails (auth, rate limit, invalid request)
+    cost_model:
+      latency: Resolution (<100ms) + Provider API latency (500ms-5s typical)
+      financial: Variable based on resolved model pricing
+      network: Depends on message size and model
+    hooks:
+      on_before_call:
+        provides: "[role, provider, model, mode, params, messages]"
+        use_case: Logging, telemetry, cost tracking
+      on_after_call:
+        provides: "[role, provider, model, mode, success, error, response]"
+        use_case: Success/failure tracking, response logging
+  
+  - capability_id: runtime.execute.embedding
+    intent: Generate vector embeddings using role-based configuration
+    input_contract:
+      - name: role
+        type: string
+        required: true
+        description: Logical role identifier for embedding model
+      - name: input
+        type: string | array[string]
+        required: true
+        description: Single text or batch of texts to embed
+      - name: params_override
+        type: object
+        required: false
+        description: Optional parameter overrides
+    output_contract:
+      - name: response
+        type: object
+        description: Provider-specific embedding response (delegated to any-llm)
+    constraints:
+      - Same as runtime.execute.completion
+      - Role must map to embedding-capable model
+    failure_modes:
+      - Same as runtime.execute.completion
+    cost_model:
+      latency: Resolution (<100ms) + Provider API latency (100ms-1s typical)
+      financial: Variable based on resolved model pricing (typically cheaper than completion)
+  
+  - capability_id: runtime.validate.environment
+    intent: Validate that all required environment variables are set
+    input_contract:
+      - name: strict_env
+        type: boolean
+        required: true
+        description: Whether to enforce environment validation
+    output_contract:
+      - name: validation_result
+        type: void | exception
+        description: Raises exception if validation fails, otherwise silent
+    constraints:
+      - Only validates if strict_env=true
+      - Checks all env_key values from provider configs
+    failure_modes:
+      - error: EnvVarMissingError
+        condition: Required environment variable not set
+    cost_model:
+      latency: <10ms (environment variable lookup)
+  
+  # --- CLI Capabilities ---
+  
+  - capability_id: cli.init.project
+    intent: Initialize new LLM Hub project with default configuration files
+    input_contract:
+      - name: interactive
+        type: boolean
+        required: false
+        description: Whether to use interactive setup (true) or quick init (false)
+    output_contract:
+      - name: created_files
+        type: array[string]
+        description: Paths to created configuration files
+        typical_value: ["llmhub.spec.yaml", ".env.example"]
+    constraints:
+      - Creates files in current working directory
+      - Will not overwrite existing files (safe by default)
+    cost_model:
+      latency: <1s (file I/O)
+  
+  - capability_id: cli.generate.runtime_config
+    intent: Transform spec file (llmhub.spec.yaml) into runtime config (llmhub.yaml)
+    input_contract:
+      - name: spec_path
+        type: string
+        required: false
+        description: Path to spec file (defaults to llmhub.spec.yaml)
+      - name: output_path
+        type: string
+        required: false
+        description: Path for runtime config (defaults to llmhub.yaml)
+      - name: dry_run
+        type: boolean
+        required: false
+        description: Preview generation without writing file
+      - name: explain
+        type: boolean
+        required: false
+        description: Show reasoning for model selections
+      - name: no_llm
+        type: boolean
+        required: false
+        description: Use heuristic-only mode (no LLM-assisted generation)
+    output_contract:
+      - name: runtime_config
+        type: object
+        description: Generated RuntimeConfig with concrete provider/model mappings
+    constraints:
+      - Requires valid spec file
+      - Requires catalog access (may trigger catalog build)
+      - LLM-assisted mode requires configured LLM provider
+    cost_model:
+      latency: 2-10s (catalog loading + selection logic + optional LLM calls)
+      financial: Small cost if using LLM-assisted generation
+  
+  - capability_id: catalog.build
+    intent: Construct unified LLM model catalog from multiple data sources
+    input_contract:
+      - name: force_refresh
+        type: boolean
+        required: false
+        default: false
+        description: Bypass cache and rebuild from sources
+      - name: cache_ttl
+        type: integer
+        required: false
+        default: 86400
+        description: Cache time-to-live in seconds
+    output_contract:
+      - name: catalog
+        type: Catalog
+        description: Complete catalog with CanonicalModel entries
+        schema_ref: "CanonicalModel schema in catalog.schema section"
+      - name: stats
+        type: object
+        description: Catalog statistics
+        fields:
+          - total_models: integer
+          - providers: array[string]
+          - data_sources: array[string]
+    constraints:
+      - Requires network access to models.dev API
+      - Requires network access to LMArena GitHub catalog
+      - Requires any-llm for provider discovery
+      - Cache stored at platform-specific config directory
+    failure_modes:
+      - error: NetworkError
+        condition: Cannot reach external data sources
+        mitigation: Falls back to cached catalog if available
+      - error: CacheError
+        condition: Cache corrupted or unreadable
+        mitigation: Rebuilds from sources
+    cost_model:
+      latency:
+        full_rebuild: 5-15 seconds
+        cached: <100ms
+      network: ~500KB download (metadata APIs)
+      storage: ~1-5MB (cached catalog JSON)
+    data_sources:
+      - name: any-llm
+        purpose: Provider/model discovery (what's callable)
+        update_frequency: real-time
+      - name: models.dev
+        purpose: Pricing, capabilities, limits
+        url: https://models.dev/api.json
+        update_frequency: daily
+      - name: LMArena
+        purpose: Quality scores (ELO ratings)
+        url: https://github.com/lmarena/arena-catalog
+        update_frequency: weekly
+    transformation_logic:
+      - Fuses sources using canonical ID mapping
+      - Computes global statistics (quantiles for cost/quality)
+      - Derives normalized tiers (1-5 scale)
+      - Generates semantic tags (reasoning, vision, tools, etc.)
+  
+  - capability_id: catalog.query
+    intent: Query catalog for models matching specific criteria
+    input_contract:
+      - name: provider
+        type: string
+        required: false
+        description: Filter by provider name
+      - name: capabilities
+        type: array[string]
+        required: false
+        description: Required capabilities (e.g., ["reasoning", "vision"])
+      - name: max_cost_tier
+        type: integer
+        required: false
+        description: Maximum acceptable cost tier (1-5)
+      - name: min_quality_tier
+        type: integer
+        required: false
+        description: Minimum quality tier (1-5, lower is better)
+    output_contract:
+      - name: models
+        type: array[CanonicalModel]
+        description: Filtered list of models matching criteria
+    constraints:
+      - Requires catalog to be built first
+    cost_model:
+      latency: <50ms (in-memory filtering)
+  
+  - capability_id: cli.test.role
+    intent: Interactively test a role by sending sample prompt
+    input_contract:
+      - name: role
+        type: string
+        required: true
+        description: Role name to test
+      - name: prompt
+        type: string
+        required: false
+        description: Test prompt (uses default if not provided)
+    output_contract:
+      - name: test_result
+        type: object
+        description: Test execution details
+        fields:
+          - success: boolean
+          - response: object | null
+          - error: string | null
+          - latency_ms: integer
+    constraints:
+      - Requires valid runtime configuration
+      - Requires provider API access
+    cost_model:
+      latency: Variable (depends on model)
+      financial: Cost of single API call
+  
+  - capability_id: cli.validate.environment
+    intent: Diagnose environment setup and validate configuration
+    input_contract: []
+    output_contract:
+      - name: diagnostics
+        type: object
+        description: Environment health check results
+        fields:
+          - config_valid: boolean
+          - env_vars_set: array[string]
+          - env_vars_missing: array[string]
+          - providers_available: array[string]
+          - errors: array[string]
+    cost_model:
+      latency: <1s
+
+# ============================================================================
+# SECTION 3: CONFIGURATION SCHEMA
+# ============================================================================
+
+configuration_schema:
+  
+  # Spec Configuration (Human-Facing Input)
+  
+  - entity_name: SpecConfig
+    file_name: llmhub.spec.yaml
+    purpose: Human-friendly specification of LLM needs and preferences
+    description: High-level declaration of roles, preferences, and providers
+    schema:
+      - field: project
+        type: string
+        required: true
+        semantic: Project identifier for tracking
+      
+      - field: env
+        type: string
+        required: true
+        semantic: Environment name (dev, staging, prod)
+        typical_values: [dev, staging, prod]
+      
+      - field: providers
+        type: map[string, SpecProviderConfig]
+        required: true
+        semantic: Available LLM provider configurations
+        description: Keys are provider names (openai, anthropic, etc.)
+      
+      - field: roles
+        type: map[string, RoleSpec]
+        required: true
+        semantic: Logical role definitions with preferences
+        description: Keys are role identifiers (e.g., "llm.inference")
+      
+      - field: defaults
+        type: SpecDefaults
+        required: false
+        semantic: Fallback preferences for roles
+    
+    validation_rules:
+      - Provider names must match any-llm supported providers
+      - Role names must be unique
+      - Preferences must be valid (low/medium/high)
+    
+    related_entities:
+      - SpecProviderConfig
+      - RoleSpec
+      - Preferences
+    
+    use_cases:
+      - Declare high-level LLM requirements
+      - Specify cost/quality/latency preferences
+      - Enable environment-specific model selection
+  
+  - entity_name: SpecProviderConfig
+    purpose: Provider configuration in spec
+    schema:
+      - field: enabled
+        type: boolean
+        required: false
+        default: true
+        semantic: Whether this provider is active
+      
+      - field: env_key
+        type: string
+        required: false
+        semantic: Environment variable name for API key
+        example: OPENAI_API_KEY
+  
+  - entity_name: RoleSpec
+    purpose: Specification for a single logical role
+    schema:
+      - field: kind
+        type: enum
+        required: true
+        values: [chat, embedding, image, audio, tool]
+        semantic: Type of LLM interaction
+      
+      - field: description
+        type: string
+        required: true
+        semantic: Human-readable purpose of this role
+      
+      - field: preferences
+        type: Preferences
+        required: false
+        semantic: Model selection preferences
+      
+      - field: force_provider
+        type: string
+        required: false
+        semantic: Override automatic selection with specific provider
+      
+      - field: force_model
+        type: string
+        required: false
+        semantic: Override automatic selection with specific model
+      
+      - field: mode_params
+        type: object
+        required: false
+        semantic: Default parameters for this role
+        example: "{temperature: 0.7, max_tokens: 1024}"
+  
+  - entity_name: Preferences
+    purpose: Model selection preferences
+    schema:
+      - field: latency
+        type: enum
+        required: false
+        values: [low, medium, high]
+        semantic: Desired response speed (low=fast, high=can be slow)
+      
+      - field: cost
+        type: enum
+        required: false
+        values: [low, medium, high]
+        semantic: Budget constraint (low=cheap, high=expensive ok)
+      
+      - field: quality
+        type: enum
+        required: false
+        values: [low, medium, high]
+        semantic: Quality requirement (low=basic, high=best available)
+      
+      - field: providers
+        type: array[string]
+        required: false
+        semantic: Allowed providers for this role
+        example: "[openai, anthropic]"
+  
+  # Runtime Configuration (Machine-Executable Output)
+  
+  - entity_name: RuntimeConfig
+    file_name: llmhub.yaml
+    purpose: Machine-executable configuration for LLM role resolution
+    description: Concrete provider/model mappings generated from spec
+    schema:
+      - field: project
+        type: string
+        required: true
+        semantic: Project identifier
+      
+      - field: env
+        type: string
+        required: true
+        semantic: Environment name
+      
+      - field: providers
+        type: map[string, ProviderConfig]
+        required: true
+        semantic: Provider configurations with env vars
+      
+      - field: roles
+        type: map[string, RoleConfig]
+        required: true
+        semantic: Concrete role to provider/model mappings
+      
+      - field: defaults
+        type: RoleDefaultsConfig
+        required: false
+        semantic: Fallback role configuration
+    
+    validation_rules:
+      - Each role.provider must exist in providers map
+      - Each provider.env_key must reference valid environment variable (if strict_env=true)
+      - Role names must be unique
+    
+    generation_source: Created by "llmhub generate" command from SpecConfig
+    
+    related_entities:
+      - ProviderConfig
+      - RoleConfig
+      - RoleDefaultsConfig
+  
+  - entity_name: ProviderConfig
+    purpose: Runtime provider configuration
+    schema:
+      - field: env_key
+        type: string
+        required: false
+        semantic: Environment variable name containing API key
+        validation: Must be set in environment if role uses this provider
+  
+  - entity_name: RoleConfig
+    purpose: Concrete role configuration
+    schema:
+      - field: provider
+        type: string
+        required: true
+        semantic: Actual provider to use
+        validation: Must be defined in providers section
+      
+      - field: model
+        type: string
+        required: true
+        semantic: Actual model identifier
+        example: gpt-4o, claude-3-5-sonnet-20241022
+      
+      - field: mode
+        type: enum
+        required: true
+        values: [chat, embedding, image, audio, tool]
+        semantic: LLM interaction mode
+      
+      - field: params
+        type: object
+        required: false
+        default: "{}"
+        semantic: Model parameters
+        common_params: "{temperature, max_tokens, top_p, frequency_penalty}"
+  
+  - entity_name: RoleDefaultsConfig
+    purpose: Fallback configuration for undefined roles
+    schema: Same as RoleConfig
+    semantic: Used when requested role not found in roles map
+
+  # Catalog Schema
+  
+  - entity_name: CanonicalModel
+    purpose: Enriched model representation with metadata and tiers
+    description: Core business object used by generator and catalog queries
+    schema:
+      - field: canonical_id
+        type: string
+        semantic: Unique identifier
+        format: "provider:model_id"
+        example: "openai:gpt-4o"
+      
+      - field: provider
+        type: string
+        semantic: Provider name
+      
+      - field: model_id
+        type: string
+        semantic: Model identifier
+      
+      - field: family
+        type: string
+        required: false
+        semantic: Model family grouping
+        example: "gpt-4"
+      
+      - field: display_name
+        type: string
+        required: false
+        semantic: Human-friendly name
+      
+      - field: supports_reasoning
+        type: boolean
+        semantic: Extended reasoning capability (e.g., o1, o3)
+      
+      - field: supports_tool_call
+        type: boolean
+        semantic: Function/tool calling support
+      
+      - field: supports_structured_output
+        type: boolean
+        semantic: JSON schema output support
+      
+      - field: input_modalities
+        type: array[string]
+        semantic: Supported input types
+        values: [text, image, audio, video]
+      
+      - field: output_modalities
+        type: array[string]
+        semantic: Supported output types
+        values: [text, image, audio]
+      
+      - field: context_tokens
+        type: integer
+        required: false
+        semantic: Maximum context window size
+      
+      - field: price_input_per_million
+        type: float
+        required: false
+        semantic: Cost per 1M input tokens (USD)
+      
+      - field: price_output_per_million
+        type: float
+        required: false
+        semantic: Cost per 1M output tokens (USD)
+      
+      - field: quality_tier
+        type: integer
+        range: 1-5
+        semantic: Derived quality tier (1=best, 5=worst)
+      
+      - field: reasoning_tier
+        type: integer
+        range: 1-5
+        semantic: Reasoning capability tier (1=best, 5=worst)
+      
+      - field: creative_tier
+        type: integer
+        range: 1-5
+        semantic: Creative task tier (1=best, 5=worst)
+      
+      - field: cost_tier
+        type: integer
+        range: 1-5
+        semantic: Cost tier (1=cheapest, 5=most expensive)
+      
+      - field: arena_score
+        type: float
+        required: false
+        semantic: LMArena ELO rating
+      
+      - field: tags
+        type: array[string]
+        semantic: Capability tags
+        example: "[reasoning, vision, tools, open-weights]"
+
+# ============================================================================
+# SECTION 4: INTERACTION PATTERNS
+# ============================================================================
+
+interaction_patterns:
+  
+  - pattern_id: role_based_completion
+    intent: Execute LLM completion using logical role abstraction
+    entry_conditions:
+      - LLMHub instance initialized with valid config
+      - Target role exists in configuration OR defaults defined
+      - Required environment variables set for provider
+    
+    state_transitions:
+      - step: 1
+        action: Agent calls hub.completion(role, messages, params_override)
+        result: Call received by LLMHub instance
+      
+      - step: 2
+        action: Hub resolves role to (provider, model, params)
+        component: resolver.resolve_role()
+        result: ResolvedCall object created
+      
+      - step: 3
+        action: Hub validates provider environment variable
+        condition: If strict_env=true
+        result: EnvVarMissingError raised if missing
+      
+      - step: 4
+        action: Hub delegates to any-llm with resolved parameters
+        component: any_llm.completion()
+      
+      - step: 5
+        action: Hub executes on_before_call hook
+        condition: If hook configured
+        data_provided: "[role, provider, model, mode, params, messages]"
+      
+      - step: 6
+        action: any-llm invokes provider API
+        network: true
+        result: Provider response or exception
+      
+      - step: 7
+        action: Hub executes on_after_call hook
+        condition: If hook configured
+        data_provided: "[role, provider, model, mode, success, error, response]"
+      
+      - step: 8
+        action: Hub returns response or raises exception
+        result: Response object or exception propagated to caller
+    
+    exit_conditions:
+      - outcome: success
+        condition: Provider returns valid response
+        returns: Response object
+      
+      - outcome: failure
+        error: UnknownRoleError
+        condition: Role not found and no defaults configured
+      
+      - outcome: failure
+        error: UnknownProviderError
+        condition: Provider not defined in config
+      
+      - outcome: failure
+        error: ProviderAPIError
+        condition: Provider API call failed
+    
+    side_effects:
+      - Hooks may log events, track costs, emit telemetry
+      - Environment variable validation may raise on missing keys (if strict_env=true)
+      - Response stored in hook closure if on_after_call captures it
+    
+    code_reference: packages/runtime/src/llmhub_runtime/hub.py::completion()
+  
+  - pattern_id: spec_to_runtime_generation
+    intent: Transform human-friendly spec into machine-executable runtime config
+    entry_conditions:
+      - Valid llmhub.spec.yaml exists
+      - Catalog available (built or cached)
+      - Optional: LLM provider configured for assisted generation
+    
+    state_transitions:
+      - step: 1
+        action: Agent calls "llmhub generate"
+        result: CLI command invoked
+      
+      - step: 2
+        action: Load and validate spec file
+        component: spec_models.load_spec()
+        result: SpecConfig object
+      
+      - step: 3
+        action: Load or build catalog
+        component: catalog.builder.build_catalog()
+        result: Catalog with available models
+      
+      - step: 4
+        action: For each role in spec, select optimal model
+        component: generator.selector.select_model()
+        inputs: Role preferences, catalog, enabled providers
+        result: Provider/model selections
+      
+      - step: 5
+        action: Generate RuntimeConfig structure
+        component: generator.emitter.emit_runtime_config()
+        result: RuntimeConfig object
+      
+      - step: 6
+        action: Write llmhub.yaml file
+        result: Runtime config persisted
+    
+    exit_conditions:
+      - outcome: success
+        returns: RuntimeConfig written to llmhub.yaml
+      
+      - outcome: failure
+        error: SpecError
+        condition: Invalid spec file
+      
+      - outcome: failure
+        error: CatalogError
+        condition: Cannot build catalog
+      
+      - outcome: failure
+        error: GeneratorError
+        condition: Cannot select suitable models
+    
+    code_reference: packages/cli/src/llmhub_cli/commands/runtime.py::generate()
+  
+  - pattern_id: catalog_discovery
+    intent: Discover and enrich available LLM models
+    entry_conditions:
+      - Network access to external data sources
+      - Optional: any-llm configured with API keys
+    
+    state_transitions:
+      - step: 1
+        action: Check cache validity
+        result: Use cached catalog if fresh, otherwise proceed
+      
+      - step: 2
+        action: Discover callable models via any-llm
+        component: catalog.sources.anyllm.fetch()
+        result: List of available provider:model pairs
+      
+      - step: 3
+        action: Fetch metadata from models.dev
+        component: catalog.sources.modelsdev.fetch()
+        network: true
+        result: Pricing, capabilities, limits
+      
+      - step: 4
+        action: Fetch quality scores from LMArena
+        component: catalog.sources.arena.fetch()
+        network: true
+        result: ELO ratings and confidence intervals
+      
+      - step: 5
+        action: Fuse data sources
+        component: catalog.mapper.fuse()
+        result: Merged model records
+      
+      - step: 6
+        action: Compute statistics and derive tiers
+        component: catalog.builder.derive_tiers()
+        result: Models with normalized tier assignments
+      
+      - step: 7
+        action: Generate semantic tags
+        component: catalog.builder.generate_tags()
+        result: Models tagged with capabilities
+      
+      - step: 8
+        action: Cache catalog to disk
+        component: catalog.cache.save()
+        result: Catalog persisted
+    
+    exit_conditions:
+      - outcome: success
+        returns: Complete Catalog object
+      
+      - outcome: partial_success
+        condition: Some data sources unavailable
+        returns: Catalog with available data
+      
+      - outcome: failure
+        error: CatalogError
+        condition: All data sources failed
+    
+    code_reference: packages/cli/src/llmhub_cli/catalog/builder.py
+
+# ============================================================================
+# SECTION 5: DEPENDENCY GRAPH
+# ============================================================================
+
+dependencies:
+  
+  runtime_dependencies:
+    - name: any-llm-sdk
+      version: ">=1.2.0"
+      purpose: Universal LLM client for provider abstraction
+      required: true
+      provides: Provider-agnostic completion/embedding interface
+    
+    - name: pydantic
+      version: ">=2.0"
+      purpose: Data validation and configuration schema
+      required: true
+      provides: Type-safe config models
+    
+    - name: pyyaml
+      version: ">=6.0"
+      purpose: YAML parsing for config files
+      required: true
+    
+    - name: typer
+      version: ">=0.9.0"
+      purpose: CLI framework
+      required: true
+      scope: CLI package only
+    
+    - name: rich
+      version: ">=13.0"
+      purpose: Terminal formatting and tables
+      required: true
+      scope: CLI package only
+    
+    - name: requests
+      version: ">=2.31.0"
+      purpose: HTTP client for catalog data sources
+      required: true
+      scope: CLI package only
+    
+    - name: numpy
+      version: ">=1.24.0"
+      purpose: Statistics computation for tier derivation
+      required: true
+      scope: CLI package only
+  
+  environment_dependencies:
+    - name: OPENAI_API_KEY
+      type: environment_variable
+      required: conditional
+      condition: If using OpenAI provider
+      format: "sk-..."
+    
+    - name: ANTHROPIC_API_KEY
+      type: environment_variable
+      required: conditional
+      condition: If using Anthropic provider
+      format: "sk-ant-..."
+    
+    - name: GEMINI_API_KEY
+      type: environment_variable
+      required: conditional
+      condition: If using Google Gemini provider
+    
+    - name: DEEPSEEK_API_KEY
+      type: environment_variable
+      required: conditional
+      condition: If using DeepSeek provider
+    
+    - name: QWEN_API_KEY
+      type: environment_variable
+      required: conditional
+      condition: If using Qwen provider
+    
+    - name: MISTRAL_API_KEY
+      type: environment_variable
+      required: conditional
+      condition: If using Mistral provider
+  
+  external_services:
+    - name: models.dev API
+      url: https://models.dev/api.json
+      purpose: Model metadata (pricing, capabilities, limits)
+      required: conditional
+      condition: For catalog building
+      availability: public, no auth required
+      update_frequency: daily
+    
+    - name: LMArena Catalog
+      url: https://github.com/lmarena/arena-catalog
+      purpose: Model quality scores (ELO ratings)
+      required: conditional
+      condition: For catalog building
+      availability: public, no auth required
+      update_frequency: weekly
+    
+    - name: OpenAI API
+      url: https://api.openai.com
+      purpose: LLM completions/embeddings
+      required: conditional
+      condition: If using OpenAI models
+      requires: OPENAI_API_KEY
+    
+    - name: Anthropic API
+      url: https://api.anthropic.com
+      purpose: LLM completions
+      required: conditional
+      condition: If using Anthropic models
+      requires: ANTHROPIC_API_KEY
+  
+  provides:
+    - capability: LLM provider abstraction
+      description: Unified interface for multiple LLM providers
+      benefit: Swap providers/models without code changes
+    
+    - capability: Config-driven model resolution
+      description: Declarative role-to-model mapping
+      benefit: Version-controlled LLM decisions
+    
+    - capability: Intelligent model catalog
+      description: Enriched metadata for automated model selection
+      benefit: Cost/quality-aware model choices
+    
+    - capability: Environment-based configuration
+      description: Different models per environment (dev/staging/prod)
+      benefit: Production-grade deployment flexibility
+
+# ============================================================================
+# SECTION 6: ERROR TAXONOMY (Optional)
+# ============================================================================
+
+error_taxonomy:
+  
+  - error_code: UnknownRoleError
+    category: configuration
+    description: Requested role not found in configuration
+    recovery_strategies:
+      - Check role name spelling
+      - Add role to llmhub.yaml or llmhub.spec.yaml
+      - Configure defaults in runtime config for fallback
+    example_message: "Role 'llm.unknown' not found and no defaults configured"
+  
+  - error_code: UnknownProviderError
+    category: configuration
+    description: Role references provider not defined in config
+    recovery_strategies:
+      - Add provider to providers section
+      - Correct provider name in role configuration
+    example_message: "Provider 'unknownprovider' not defined in config"
+  
+  - error_code: EnvVarMissingError
+    category: environment
+    description: Required environment variable not set
+    recovery_strategies:
+      - Set environment variable (export or .env file)
+      - Disable strict_env mode for development
+      - Check provider.env_key configuration
+    example_message: "Missing environment variable: OPENAI_API_KEY for provider openai"
+  
+  - error_code: ConfigError
+    category: configuration
+    description: Invalid or unreadable configuration file
+    recovery_strategies:
+      - Validate YAML syntax
+      - Check file permissions
+      - Run "llmhub spec validate" or "llmhub doctor"
+      - Regenerate config with "llmhub generate"
+    example_message: "Failed to load config from llmhub.yaml: Invalid YAML"
+  
+  - error_code: SpecError
+    category: configuration
+    description: Invalid spec file
+    recovery_strategies:
+      - Validate spec with "llmhub spec validate"
+      - Check YAML syntax
+      - Verify required fields (project, env, providers, roles)
+    example_message: "Invalid spec file: missing required field 'project'"
+  
+  - error_code: CatalogError
+    category: data
+    description: Cannot build or load catalog
+    recovery_strategies:
+      - Check network connectivity
+      - Force refresh with "llmhub catalog refresh"
+      - Clear cache and retry
+    example_message: "Failed to build catalog: network timeout"
+  
+  - error_code: ProviderAPIError
+    category: external
+    description: Provider API call failed
+    recovery_strategies:
+      - Check API key validity
+      - Verify network connectivity
+      - Check provider service status
+      - Review rate limits
+      - Validate request parameters
+    example_message: "Provider API error: 401 Unauthorized"
+
+# ============================================================================
+# SECTION 7: PERFORMANCE CHARACTERISTICS (Optional)
+# ============================================================================
+
+performance_characteristics:
+  
+  - operation: role_resolution
+    latency:
+      typical: <100ms
+      worst_case: <500ms
+    throughput: 1000+ ops/sec (local, no I/O)
+    resource_usage:
+      memory: negligible (<1MB)
+      cpu: minimal (hash map lookups)
+  
+  - operation: completion_call
+    latency:
+      typical: 500ms-5s
+      worst_case: 30s
+      note: Dominated by provider API latency
+    throughput: Depends on provider rate limits
+    resource_usage:
+      memory: <10MB (request/response buffers)
+      network: Variable (message size dependent)
+  
+  - operation: catalog_build
+    latency:
+      cached: <100ms
+      full_rebuild: 5-15s
+    throughput: N/A (batch operation)
+    resource_usage:
+      memory: <50MB (catalog data structures)
+      network: ~500KB download
+      disk: 1-5MB (cached catalog)
+  
+  - operation: spec_to_runtime_generation
+    latency:
+      typical: 2-10s
+      note: Includes catalog loading + selection logic
+    resource_usage:
+      memory: <100MB
+      network: Minimal (catalog may be cached)
+
+# ============================================================================
+# METADATA
+# ============================================================================
+
+metadata:
+  manifest_generated: "2025-12-01"
+  manifest_author: Rethink Paradigms
+  schema_compliance: aimanifest-v1.0
+  human_documentation: https://github.com/rethink-paradigms/llm-hub#readme
+  api_documentation: https://github.com/rethink-paradigms/llm-hub/tree/main/packages
+  examples_repository: https://github.com/rethink-paradigms/llm-hub/tree/main/examples
+  support_contact: info@rethink-paradigms.com
+  license: MIT

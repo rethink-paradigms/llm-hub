@@ -1,16 +1,17 @@
-.PHONY: help test test-report install clean release-patch release-minor release-major
+.PHONY: help test test-report install clean validate-manifest release-patch release-minor release-major
 
 help:
 	@echo "LLM Hub - Development Commands"
 	@echo ""
 	@echo "Available targets:"
-	@echo "  install          Install packages in editable mode"
-	@echo "  test             Run tests with pytest"
-	@echo "  test-report      Run tests and generate TER report"
-	@echo "  clean            Clean build artifacts and cache"
-	@echo "  release-patch    Release patch version (0.1.0 -> 0.1.1)"
-	@echo "  release-minor    Release minor version (0.1.0 -> 0.2.0)"
-	@echo "  release-major    Release major version (0.1.0 -> 1.0.0)"
+	@echo "  install            Install packages in editable mode"
+	@echo "  test               Run tests with pytest"
+	@echo "  test-report        Run tests and generate TER report"
+	@echo "  validate-manifest  Validate AI-native manifest"
+	@echo "  clean              Clean build artifacts and cache"
+	@echo "  release-patch      Release patch version (0.1.0 -> 0.1.1)"
+	@echo "  release-minor      Release minor version (0.1.0 -> 0.2.0)"
+	@echo "  release-major      Release major version (0.1.0 -> 1.0.0)"
 	@echo ""
 
 install:
@@ -22,6 +23,9 @@ test:
 
 test-report:
 	python -m llmhub_cli.tools.test_reporter
+
+validate-manifest:
+	python scripts/validate_manifest.py
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true

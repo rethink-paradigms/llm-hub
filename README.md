@@ -4,6 +4,8 @@
 
 LLM Hub is a production-grade system for managing large language models (LLMs) through declarative configuration rather than hardcoded provider/model names. It provides a unified runtime that resolves logical "roles" to actual LLM providers and models, plus a sophisticated catalog system that enriches models with cost, quality, and capability metadata.
 
+> **🤖 For AI Agents**: LLM Hub provides [AI-native documentation](llmhub.aimanifest.yaml) — a structured manifest optimized for machine consumption. See [.aimanifest/README.md](.aimanifest/README.md) for usage instructions. This enables **10x more efficient** tool understanding compared to parsing this README.
+
 ---
 
 ## What is LLM Hub?

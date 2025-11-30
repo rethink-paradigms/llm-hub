@@ -1,7 +1,7 @@
 # CLI Reference
 
 <cite>
-**Referenced Files in This Document**
+**Referenced Files in This Document**  
 - [cli.py](file://packages/cli/src/llmhub_cli/cli.py) - *Updated in recent commit*
 - [setup.py](file://packages/cli/src/llmhub_cli/commands/setup.py) - *Updated in recent commit*
 - [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py) - *Updated in recent commit*
@@ -16,7 +16,7 @@
 </cite>
 
 ## Update Summary
-**Changes Made**
+**Changes Made**  
 - Updated all file references to reflect the new `llmhub_cli` namespace in the `packages/cli` directory
 - Modified command architecture section to reflect separation of CLI and runtime components
 - Updated section sources to point to new file locations in the `llmhub_cli` package
@@ -74,10 +74,10 @@ G --> G1[env sync]
 G --> G2[env check]
 ```
 
-**Diagram sources**
+**Diagram sources**  
 - [cli.py](file://packages/cli/src/llmhub_cli/cli.py#L4-L45)
 
-**Section sources**
+**Section sources**  
 - [cli.py](file://packages/cli/src/llmhub_cli/cli.py#L1-L67)
 
 ## Project Bootstrapping Commands
@@ -86,20 +86,20 @@ G --> G2[env check]
 
 Creates a minimal LLMHub specification with essential configuration for immediate use.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub init
 ```
 
 **Purpose:** Provides a streamlined way to create a basic LLMHub project with default settings, ideal for quick prototyping or simple use cases.
 
-**Behavior:**
-- Creates `llmhub.spec.yaml` with OpenAI as the default provider
-- Sets up a single `llm.inference` role with medium cost, latency, and high quality preferences
-- Generates `.env.example` with OpenAI API key configuration
-- Preserves existing spec files when prompted
+**Behavior:**  
+- Creates `llmhub.spec.yaml` with OpenAI as the default provider  
+- Sets up a single `llm.inference` role with medium cost, latency, and high quality preferences  
+- Generates `.env.example` with OpenAI API key configuration  
+- Preserves existing spec files when prompted  
 
-**Example Output:**
+**Example Output:**  
 ```
 ✓ Minimal spec created at ./llmhub.spec.yaml
 ✓ Environment example created at ./.env.example
@@ -110,34 +110,34 @@ Next steps:
   3. Run: llmhub generate
 ```
 
-**Section sources**
+**Section sources**  
 - [setup.py](file://packages/cli/src/llmhub_cli/commands/setup.py#L121-L161)
 
 ### `setup` - Interactive Project Setup
 
 Guided interactive setup process for comprehensive LLMHub project configuration.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub setup
 ```
 
 **Purpose:** Enables users to create fully customized LLMHub specifications through an interactive wizard, selecting providers, configuring roles, and setting preferences.
 
-**Workflow:**
-1. **Project Configuration:** Enter project name and environment
-2. **Provider Selection:** Choose from supported providers (OpenAI, Anthropic, Gemini, Mistral, Cohere)
-3. **Role Scaffolding:** Select standard roles to create (preprocess, inference, embedding, tools)
-4. **Preference Configuration:** Set cost, latency, and quality preferences for each role
-5. **File Generation:** Creates spec file and environment example
+**Workflow:**  
+1. **Project Configuration:** Enter project name and environment  
+2. **Provider Selection:** Choose from supported providers (OpenAI, Anthropic, Gemini, Mistral, Cohere)  
+3. **Role Scaffolding:** Select standard roles to create (preprocess, inference, embedding, tools)  
+4. **Preference Configuration:** Set cost, latency, and quality preferences for each role  
+5. **File Generation:** Creates spec file and environment example  
 
-**Available Standard Roles:**
-- `llm.preprocess`: Fast, cost-effective model for input normalization
-- `llm.inference`: Main reasoning model for answers and complex tasks
-- `llm.embedding`: Vector embeddings for retrieval and similarity operations
-- `llm.tools`: Model specialized for tool/function calling
+**Available Standard Roles:**  
+- `llm.preprocess`: Fast, cost-effective model for input normalization  
+- `llm.inference`: Main reasoning model for answers and complex tasks  
+- `llm.embedding`: Vector embeddings for retrieval and similarity operations  
+- `llm.tools`: Model specialized for tool/function calling  
 
-**Example Session:**
+**Example Session:**  
 ```bash
 LLMHub Setup
 
@@ -164,27 +164,27 @@ Configuring llm.inference
   Quality preference? [low/medium/high]: high
 ```
 
-**Section sources**
+**Section sources**  
 - [setup.py](file://packages/cli/src/llmhub_cli/commands/setup.py#L16-L118)
 
 ### `status` - Project Health Check
 
 Displays current project status and validates configuration files.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub status
 ```
 
 **Purpose:** Provides a comprehensive overview of project health, validating spec and runtime files while identifying potential issues.
 
-**Validation Checks:**
-- Spec file existence and validity
-- Runtime file existence and validity
-- Environment variable configuration
-- Provider availability
+**Validation Checks:**  
+- Spec file existence and validity  
+- Runtime file existence and validity  
+- Environment variable configuration  
+- Provider availability  
 
-**Output Format:**
+**Output Format:**  
 ```
 LLMHub Project Status
 Root: /path/to/project
@@ -198,21 +198,21 @@ Providers: 1 enabled, 0 disabled
 Roles: 3 total
 ```
 
-**Section sources**
+**Section sources**  
 - [setup.py](file://packages/cli/src/llmhub_cli/commands/setup.py#L164-L215)
 
 ### `path` - Path Resolution
 
 Shows resolved file paths for LLMHub configuration files.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub path
 ```
 
 **Purpose:** Helps users understand where LLMHub expects to find configuration files and where it will create them.
 
-**Output Example:**
+**Output Example:**  
 ```
 Resolved Paths:
 Root: /path/to/project
@@ -221,7 +221,7 @@ Runtime: /path/to/project/llmhub.yaml
 Env example: /path/to/project/.env.example
 ```
 
-**Section sources**
+**Section sources**  
 - [setup.py](file://packages/cli/src/llmhub_cli/commands/setup.py#L198-L207)
 
 ## Specification Management
@@ -230,14 +230,14 @@ Env example: /path/to/project/.env.example
 
 Shows the complete LLMHub specification in a formatted table layout.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub spec show
 ```
 
 **Purpose:** Provides a readable overview of the current specification, including providers and all defined roles.
 
-**Output Format:**
+**Output Format:**  
 ```
 Project: my-application
 Environment: development
@@ -260,27 +260,27 @@ Roles in my-application
 └─────────────────┴─────────┴─────────────────────────────┴─────────────────┘
 ```
 
-**Section sources**
+**Section sources**  
 - [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py#L13-L34)
 
 ### `spec validate` - Specification Validation
 
 Validates the specification file for syntax and semantic correctness.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub spec validate
 ```
 
 **Purpose:** Ensures the specification file is properly formatted and contains valid configuration data.
 
-**Validation Features:**
-- YAML syntax validation
-- Required field presence
-- Type checking for all values
-- Cross-reference validation between roles and providers
+**Validation Features:**  
+- YAML syntax validation  
+- Required field presence  
+- Type checking for all values  
+- Cross-reference validation between roles and providers  
 
-**Success Output:**
+**Success Output:**  
 ```
 ✓ Spec is valid
   Project: my-project
@@ -288,50 +288,50 @@ llmhub spec validate
   Providers: 2
 ```
 
-**Error Output:**
+**Error Output:**  
 ```
 ✗ Spec validation failed:
   Required field 'description' missing in role 'llm.inference'
 ```
 
-**Section sources**
+**Section sources**  
 - [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py#L36-L53)
 
 ### `roles` - List All Roles
 
 Displays all roles defined in the specification.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub roles
 ```
 
 **Purpose:** Provides a quick overview of all roles currently defined in the specification.
 
-**Output Format:**
+**Output Format:**  
 Same as `spec show` but focused solely on role information.
 
-**Section sources**
+**Section sources**  
 - [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py#L56-L69)
 
 ### `add-role` - Add New Role
 
 Interactively adds a new role to the specification.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub add-role <role-name>
 ```
 
 **Purpose:** Enables dynamic addition of new roles to the specification during development.
 
-**Interactive Workflow:**
-1. Role kind selection (chat, embedding, image, audio, tool, other)
-2. Description input
-3. Preference configuration (cost, latency, quality)
-4. Provider selection from enabled providers
+**Interactive Workflow:**  
+1. Role kind selection (chat, embedding, image, audio, tool, other)  
+2. Description input  
+3. Preference configuration (cost, latency, quality)  
+4. Provider selection from enabled providers  
 
-**Example Session:**
+**Example Session:**  
 ```bash
 Adding role: llm.analyzer
 
@@ -357,45 +357,45 @@ Providers:
 Select preferred providers: 1,2
 ```
 
-**Section sources**
+**Section sources**  
 - [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py#L72-L139)
 
 ### `edit-role` - Modify Existing Role
 
 Modifies an existing role's configuration.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub edit-role <role-name>
 ```
 
 **Purpose:** Allows modification of role attributes without recreating the entire role definition.
 
-**Editable Attributes:**
-- Description
-- Preferences (cost, latency, quality)
-- Provider preferences
+**Editable Attributes:**  
+- Description  
+- Preferences (cost, latency, quality)  
+- Provider preferences  
 
-**Section sources**
+**Section sources**  
 - [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py#L145-L189)
 
 ### `rm-role` - Remove Role
 
 Removes a role from the specification.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub rm-role <role-name>
 ```
 
 **Purpose:** Safely removes roles that are no longer needed, maintaining specification integrity.
 
-**Safety Features:**
-- Confirmation prompt before deletion
-- Validation that role exists
-- Clear messaging about subsequent generation requirements
+**Safety Features:**  
+- Confirmation prompt before deletion  
+- Validation that role exists  
+- Clear messaging about subsequent generation requirements  
 
-**Section sources**
+**Section sources**  
 - [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py#L195-L223)
 
 ## Runtime Generation
@@ -404,18 +404,18 @@ llmhub rm-role <role-name>
 
 Generates the final runtime configuration from the specification using the sophisticated model selection pipeline.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub generate [--dry-run] [--no-llm] [--force] [--explain]
 ```
 
 **Purpose:** Transforms human-readable specifications into machine-executable runtime configurations through intelligent model selection.
 
-**Options:**
-- `--dry-run`: Show what would be generated without saving
-- `--no-llm`: Use heuristic-only mode (no LLM calls)
-- `--force`: Overwrite existing runtime without confirmation
-- `--explain`: Show detailed rationale for model selections
+**Options:**  
+- `--dry-run`: Show what would be generated without saving  
+- `--no-llm`: Use heuristic-only mode (no LLM calls)  
+- `--force`: Overwrite existing runtime without confirmation  
+- `--explain`: Show detailed rationale for model selections  
 
 **Underlying Pipeline:**
 
@@ -440,10 +440,10 @@ L --> M
 M --> N[Save llmhub.yaml]
 ```
 
-**Diagram sources**
+**Diagram sources**  
 - [README.md](file://packages/cli/src/llmhub_cli/generator/README.md#L59-L73)
 
-**Dry Run Example:**
+**Dry Run Example:**  
 ```bash
 llmhub generate --dry-run
 
@@ -471,7 +471,7 @@ Roles
 └─────────────────┴─────────┴─────────────┴─────────┘
 ```
 
-**Explanation Mode Example:**
+**Explanation Mode Example:**  
 ```bash
 llmhub generate --explain
 
@@ -485,21 +485,21 @@ llm.inference: Selected gpt-4o (cost: 4/5, quality: 1/5) based on high quality p
 llm.preprocess: Selected gpt-4o-mini (cost: 1/5, quality: 3/5) for fast processing
 ```
 
-**Section sources**
+**Section sources**  
 - [runtime.py](file://packages/cli/src/llmhub_cli/commands/runtime.py#L13-L69)
 
 ### `runtime show` - Display Runtime Configuration
 
 Shows the current runtime configuration in a formatted table.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub runtime show
 ```
 
 **Purpose:** Provides a readable representation of the generated runtime configuration.
 
-**Output Format:**
+**Output Format:**  
 ```
 Project: my-application
 Environment: production
@@ -513,14 +513,14 @@ Roles
 └─────────────────┴─────────┴─────────────┴─────────┘
 ```
 
-**Section sources**
+**Section sources**  
 - [runtime.py](file://packages/cli/src/llmhub_cli/commands/runtime.py#L78-L96)
 
 ### `runtime diff` - Compare Spec vs Runtime
 
 Shows differences between specification and runtime configurations.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub runtime diff
 ```
@@ -529,7 +529,7 @@ llmhub runtime diff
 
 **Output Scenarios:**
 
-**All Roles Need Generation:**
+**All Roles Need Generation:**  
 ```
 Spec vs Runtime Diff:
 
@@ -541,7 +541,7 @@ Roles in spec but not in runtime (3):
 Run 'llmhub generate' to create runtime
 ```
 
-**Partial Synchronization:**
+**Partial Synchronization:**  
 ```
 Spec vs Runtime Diff:
 
@@ -556,7 +556,7 @@ Roles in both (2):
   = llm.embedding → openai:text-embedding-3-large
 ```
 
-**Fully Synchronized:**
+**Fully Synchronized:**  
 ```
 Spec vs Runtime Diff:
 
@@ -568,7 +568,7 @@ Roles in both (3):
 ✓ Spec and runtime are in sync
 ```
 
-**Section sources**
+**Section sources**  
 - [runtime.py](file://packages/cli/src/llmhub_cli/commands/runtime.py#L99-L155)
 
 ## Model Catalog Management
@@ -577,18 +577,18 @@ Roles in both (3):
 
 Shows the current model catalog with filtering and detailed information.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub catalog show [--provider PROVIDER] [--details]
 ```
 
 **Purpose:** Provides visibility into available models from all configured providers, helping with specification decisions.
 
-**Options:**
-- `--provider`: Filter models by specific provider
-- `--details`: Show additional model information (Arena scores, tags)
+**Options:**  
+- `--provider`: Filter models by specific provider  
+- `--details`: Show additional model information (Arena scores, tags)  
 
-**Output Format:**
+**Output Format:**  
 ```
 Catalog Summary
   Total models: 156
@@ -612,7 +612,7 @@ Anthropic (23 models)
 └─────────────────────────────┴─────────┴───────────┘
 ```
 
-**Detailed View:**
+**Detailed View:**  
 ```
 Claude 3.5 Sonnet
 ┌─────────────────────────────┬─────────┬───────────┬─────────────┬─────────────────────┐
@@ -622,30 +622,30 @@ Claude 3.5 Sonnet
 └─────────────────────────────┴─────────┴───────────┴─────────────┴─────────────────────┘
 ```
 
-**Section sources**
+**Section sources**  
 - [catalog.py](file://packages/cli/src/llmhub_cli/commands/catalog.py#L51-L127)
 
 ### `catalog refresh` - Update Model Catalog
 
 Forces rebuilding of the model catalog from provider APIs.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub catalog refresh [--ttl TTL_HOURS]
 ```
 
 **Purpose:** Updates the local model catalog with fresh data from provider APIs, ensuring access to the latest models and pricing information.
 
-**Options:**
-- `--ttl`: Cache time-to-live in hours (default: 24)
+**Options:**  
+- `--ttl`: Cache time-to-live in hours (default: 24)  
 
-**Benefits:**
-- Access to newly released models
-- Updated pricing information
-- Current performance metrics
-- Fresh capability information
+**Benefits:**  
+- Access to newly released models  
+- Updated pricing information  
+- Current performance metrics  
+- Fresh capability information  
 
-**Output Example:**
+**Output Example:**  
 ```
 Refreshing catalog...
 
@@ -662,7 +662,7 @@ Models by provider:
   cohere: 8
 ```
 
-**Section sources**
+**Section sources**  
 - [catalog.py](file://packages/cli/src/llmhub_cli/commands/catalog.py#L16-L48)
 
 ## Testing and Diagnostics
@@ -671,28 +671,28 @@ Models by provider:
 
 Tests individual roles with custom prompts to validate model configurations.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub test [--role ROLE] [--prompt PROMPT] [--env-file FILE] [--json]
 ```
 
 **Purpose:** Enables interactive testing of role configurations to ensure proper model selection and API connectivity.
 
-**Options:**
-- `--role`: Specific role to test (otherwise interactive selection)
-- `--prompt`: Custom prompt to send (otherwise interactive prompt)
-- `--env-file`: Path to .env file for environment variables
-- `--json`: Output raw JSON response instead of formatted text
+**Options:**  
+- `--role`: Specific role to test (otherwise interactive selection)  
+- `--prompt`: Custom prompt to send (otherwise interactive prompt)  
+- `--env-file`: Path to .env file for environment variables  
+- `--json`: Output raw JSON response instead of formatted text  
 
-**Testing Workflow:**
-1. Load runtime configuration
-2. Select role (interactive if not specified)
-3. Configure prompt (interactive if not specified)
-4. Initialize LLMHub with runtime config
-5. Execute appropriate API call based on role mode
-6. Display results with timing information
+**Testing Workflow:**  
+1. Load runtime configuration  
+2. Select role (interactive if not specified)  
+3. Configure prompt (interactive if not specified)  
+4. Initialize LLMHub with runtime config  
+5. Execute appropriate API call based on role mode  
+6. Display results with timing information  
 
-**Success Output:**
+**Success Output:**  
 ```
 Testing role: llm.inference
 Provider: openai
@@ -706,7 +706,7 @@ Response:
 Hello! How can I assist you today? I'm here to help with any questions or tasks you have.
 ```
 
-**JSON Output:**
+**JSON Output:**  
 ```bash
 llmhub test --role llm.inference --prompt "Hello" --json
 
@@ -726,36 +726,36 @@ llmhub test --role llm.inference --prompt "Hello" --json
 }
 ```
 
-**Error Scenarios:**
-- Missing API keys
-- Network connectivity issues
-- Invalid model names
-- Rate limiting
+**Error Scenarios:**  
+- Missing API keys  
+- Network connectivity issues  
+- Invalid model names  
+- Rate limiting  
 
-**Section sources**
+**Section sources**  
 - [test.py](file://packages/cli/src/llmhub_cli/commands/test.py#L18-L118)
 
 ### `doctor` - Comprehensive Health Check
 
 Runs a comprehensive diagnostic check of the entire LLMHub setup.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub doctor [--no-network]
 ```
 
 **Purpose:** Performs automated health checks across all aspects of the LLMHub configuration to identify and report issues.
 
-**Checks Performed:**
-1. **Spec Validation**: Verifies specification file syntax and completeness
-2. **Runtime Validation**: Ensures runtime configuration is valid
-3. **Environment Check**: Validates required environment variables
-4. **Network Test**: Tests connectivity to configured providers (optional)
+**Checks Performed:**  
+1. **Spec Validation**: Verifies specification file syntax and completeness  
+2. **Runtime Validation**: Ensures runtime configuration is valid  
+3. **Environment Check**: Validates required environment variables  
+4. **Network Test**: Tests connectivity to configured providers (optional)  
 
-**Options:**
-- `--no-network`: Skip network connectivity tests
+**Options:**  
+- `--no-network`: Skip network connectivity tests  
 
-**Diagnostic Output:**
+**Diagnostic Output:**  
 ```
 LLMHub Doctor
 
@@ -777,7 +777,7 @@ Summary:
 Your LLMHub setup is ready to use.
 ```
 
-**Warning Scenarios:**
+**Warning Scenarios:**  
 ```
 ✗ 1 issue(s) found:
   • Test call failed: Rate limit exceeded
@@ -787,7 +787,7 @@ Your LLMHub setup is ready to use.
   • Missing 2 environment variable(s)
 ```
 
-**Section sources**
+**Section sources**  
 - [test.py](file://packages/cli/src/llmhub_cli/commands/test.py#L125-L232)
 
 ## Environment Management
@@ -796,50 +796,50 @@ Your LLMHub setup is ready to use.
 
 Updates the `.env.example` file with current provider requirements.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub env sync
 ```
 
 **Purpose:** Keeps environment examples synchronized with current provider configurations, especially useful after adding new providers or roles.
 
-**Features:**
-- Updates existing `.env.example` files
-- Adds new environment variables for enabled providers
-- Maintains comments and formatting
-- Overwrites existing variables with current requirements
+**Features:**  
+- Updates existing `.env.example` files  
+- Adds new environment variables for enabled providers  
+- Maintains comments and formatting  
+- Overwrites existing variables with current requirements  
 
-**Section sources**
+**Section sources**  
 - [env.py](file://packages/cli/src/llmhub_cli/commands/env.py#L13-L43)
 
 ### `env check` - Environment Variable Validation
 
 Checks for missing environment variables required by the specification.
 
-**Syntax:**
+**Syntax:**  
 ```bash
 llmhub env check [--env-file FILE]
 ```
 
 **Purpose:** Identifies missing environment variables before attempting to use the LLMHub configuration.
 
-**Options:**
-- `--env-file`: Path to specific .env file to load and check
+**Options:**  
+- `--env-file`: Path to specific .env file to load and check  
 
-**Validation Process:**
-1. Load specification file
-2. Check for enabled providers
-3. Verify environment variables are set
-4. Report missing variables with provider context
+**Validation Process:**  
+1. Load specification file  
+2. Check for enabled providers  
+3. Verify environment variables are set  
+4. Report missing variables with provider context  
 
 **Output Examples:**
 
-**All Variables Present:**
+**All Variables Present:**  
 ```
 ✓ All required environment variables are set
 ```
 
-**Missing Variables:**
+**Missing Variables:**  
 ```
 ✗ Missing 2 environment variable(s):
 
@@ -849,7 +849,7 @@ llmhub env check [--env-file FILE]
 Set missing variables in .env or export them
 ```
 
-**Section sources**
+**Section sources**  
 - [env.py](file://packages/cli/src/llmhub_cli/commands/env.py#L44-L80)
 
 ## Command Architecture
@@ -876,23 +876,23 @@ I --> K[runtime_path = root/llmhub.yaml]
 I --> L[env_example_path = root/.env.example]
 ```
 
-**Diagram sources**
+**Diagram sources**  
 - [context.py](file://packages/cli/src/llmhub_cli/context.py#L27-L46)
 
-**Path Resolution Priority:**
-1. `llmhub.spec.yaml` file in directory or parents
-2. `.git` directory in directory or parents
-3. `pyproject.toml` file in directory or parents
-4. Current directory as fallback
+**Path Resolution Priority:**  
+1. `llmhub.spec.yaml` file in directory or parents  
+2. `.git` directory in directory or parents  
+3. `pyproject.toml` file in directory or parents  
+4. Current directory as fallback  
 
-**Section sources**
+**Section sources**  
 - [context.py](file://packages/cli/src/llmhub_cli/context.py#L49-L90)
 
 ### Command Registration and Typing
 
 The CLI uses Typer for robust command registration with automatic help generation and type safety.
 
-**Command Structure:**
+**Command Structure:**  
 ```python
 # Main app
 app = typer.Typer(help="LLMHub CLI — manage LLM specs and runtime configs")
@@ -903,7 +903,7 @@ runtime_app = typer.Typer(help="Runtime management commands")
 catalog_app = typer.Typer(help="Model catalog management")
 ```
 
-**Section sources**
+**Section sources**  
 - [cli.py](file://packages/cli/src/llmhub_cli/cli.py#L4-L45)
 
 ## Error Handling and Troubleshooting
@@ -911,57 +911,57 @@ catalog_app = typer.Typer(help="Model catalog management")
 ### Common Error Scenarios
 
 #### Missing Specification Files
-**Problem:** Commands fail with "No spec file found" messages.
+**Problem:** Commands fail with "No spec file found" messages.  
 **Solution:** Run `llmhub init` or `llmhub setup` to create a specification.
 
 #### Runtime Generation Failures
-**Problem:** `llmhub generate` fails or produces unexpected results.
-**Solutions:**
-- Run `llmhub spec validate` to check specification syntax
-- Use `llmhub generate --dry-run` to preview changes
-- Enable `--explain` mode for detailed rationale
-- Check environment variables with `llmhub env check`
+**Problem:** `llmhub generate` fails or produces unexpected results.  
+**Solutions:**  
+- Run `llmhub spec validate` to check specification syntax  
+- Use `llmhub generate --dry-run` to preview changes  
+- Enable `--explain` mode for detailed rationale  
+- Check environment variables with `llmhub env check`  
 
 #### API Connectivity Issues
-**Problem:** `llmhub test` or `llmhub doctor` reports connection failures.
-**Solutions:**
-- Verify API keys are set in environment variables
-- Check network connectivity
-- Review provider status pages
-- Use `--no-llm` flag for offline testing
+**Problem:** `llmhub test` or `llmhub doctor` reports connection failures.  
+**Solutions:**  
+- Verify API keys are set in environment variables  
+- Check network connectivity  
+- Review provider status pages  
+- Use `--no-llm` flag for offline testing  
 
 #### Model Selection Problems
-**Problem:** Generated runtime uses unexpected models.
-**Solutions:**
-- Review role preferences in specification
-- Check model catalog with `llmhub catalog show`
-- Use `--explain` flag during generation
-- Adjust provider priorities in specification
+**Problem:** Generated runtime uses unexpected models.  
+**Solutions:**  
+- Review role preferences in specification  
+- Check model catalog with `llmhub catalog show`  
+- Use `--explain` flag during generation  
+- Adjust provider priorities in specification  
 
 ### Diagnostic Workflow
 
-1. **Basic Health Check:**
+1. **Basic Health Check:**  
    ```bash
    llmhub doctor
    ```
 
-2. **Specification Validation:**
+2. **Specification Validation:**  
    ```bash
    llmhub spec validate
    llmhub spec show
    ```
 
-3. **Environment Verification:**
+3. **Environment Verification:**  
    ```bash
    llmhub env check
    ```
 
-4. **Runtime Comparison:**
+4. **Runtime Comparison:**  
    ```bash
    llmhub runtime diff
    ```
 
-5. **Interactive Testing:**
+5. **Interactive Testing:**  
    ```bash
    llmhub test --role llm.inference
    ```
@@ -969,26 +969,26 @@ catalog_app = typer.Typer(help="Model catalog management")
 ### Troubleshooting Tips
 
 #### Environment Issues
-- Use `llmhub env sync` to regenerate environment examples
-- Check `.env` file loading with `--env-file` option
-- Verify environment variable names match provider requirements
+- Use `llmhub env sync` to regenerate environment examples  
+- Check `.env` file loading with `--env-file` option  
+- Verify environment variable names match provider requirements  
 
 #### Model Availability
-- Refresh catalog with `llmhub catalog refresh`
-- Check provider status and quotas
-- Review model capabilities with `llmhub catalog show --details`
+- Refresh catalog with `llmhub catalog refresh`  
+- Check provider status and quotas  
+- Review model capabilities with `llmhub catalog show --details`  
 
 #### Permission Problems
-- Ensure write permissions for project directory
-- Check file ownership and access rights
-- Verify Python environment has necessary packages
+- Ensure write permissions for project directory  
+- Check file ownership and access rights  
+- Verify Python environment has necessary packages  
 
 #### Network Connectivity
-- Test internet access
-- Check firewall settings
-- Verify DNS resolution
-- Review proxy configuration if applicable
+- Test internet access  
+- Check firewall settings  
+- Verify DNS resolution  
+- Review proxy configuration if applicable  
 
-**Section sources**
-- [test.py](file://packages/cli/src/llmhub_cli/commands/test.py#L125-L232)
+**Section sources**  
+- [test.py](file://packages/cli/src/llmhub_cli/commands/test.py#L125-L232)  
 - [env.py](file://packages/cli/src/llmhub_cli/commands/env.py#L44-L80)

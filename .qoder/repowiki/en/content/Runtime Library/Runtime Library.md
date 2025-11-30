@@ -589,7 +589,7 @@ response = hub.completion(
 def before_hook(context):
     # Log call details
     logger.info(f"Calling {context['provider']}::{context['model']}")
-    
+
 def after_hook(result):
     # Log response details
     if result['success']:
