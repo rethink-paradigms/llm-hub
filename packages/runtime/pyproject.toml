@@ -1,0 +1,41 @@
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "rethink-llmhub-runtime"
+version = "1.0.3"
+description = "A lightweight runtime for LLMHub that delegates to any-llm"
+readme = "README.md"
+authors = [
+  { name = "Rethink Paradigms", email = "info@rethink-paradigms.com" },
+]
+license = { text = "MIT" }
+classifiers = [
+    "Development Status :: 3 - Alpha",
+    "Intended Audience :: Developers",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "License :: OSI Approved :: MIT License",
+    "Operating System :: OS Independent",
+]
+keywords = ["llm", "ai", "llmhub", "runtime", "any-llm"]
+requires-python = ">=3.10"
+dependencies = [
+    "any-llm-sdk[all]>=1.2.0",
+    "pyyaml>=6.0",
+    "pydantic>=2.0",
+]
+
+[project.urls]
+"Homepage" = "https://github.com/rethink-paradigms/llm-hub"
+"Documentation" = "https://github.com/rethink-paradigms/llm-hub#readme"
+"Bug Tracker" = "https://github.com/rethink-paradigms/llm-hub/issues"
+"Source Code" = "https://github.com/rethink-paradigms/llm-hub"
+
+[tool.setuptools]
+package-dir = {"" = "src"}
+packages = ["llmhub_runtime"]
