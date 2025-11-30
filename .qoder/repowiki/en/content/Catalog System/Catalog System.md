@@ -2,18 +2,38 @@
 
 <cite>
 **Referenced Files in This Document**
-- [builder.py](file://packages/llmhub/src/llmhub/catalog/builder.py)
-- [mapper.py](file://packages/llmhub/src/llmhub/catalog/mapper.py)
-- [cache.py](file://packages/llmhub/src/llmhub/catalog/cache.py)
-- [schema.py](file://packages/llmhub/src/llmhub/catalog/schema.py)
-- [anyllm_source.py](file://packages/llmhub/src/llmhub/catalog/anyllm_source.py)
-- [modelsdev_source.py](file://packages/llmhub/src/llmhub/catalog/modelsdev_source.py)
-- [arena_source.py](file://packages/llmhub/src/llmhub/catalog/arena_source.py)
-- [overrides.json](file://packages/llmhub/src/llmhub/catalog/data/overrides.json)
-- [catalog_cmd.py](file://packages/llmhub/src/llmhub/commands/catalog_cmd.py)
-- [__init__.py](file://packages/llmhub/src/llmhub/catalog/__init__.py)
-- [plan-catalog.md](file://packages/llmhub/src/llmhub/PLANS/plan-catalog.md)
+- [builder.py](file://packages/cli/src/llmhub_cli/catalog/builder.py) - *Updated in recent commit*
+- [mapper.py](file://packages/cli/src/llmhub_cli/catalog/mapper.py) - *Updated in recent commit*
+- [cache.py](file://packages/cli/src/llmhub_cli/catalog/cache.py) - *Updated in recent commit*
+- [schema.py](file://packages/cli/src/llmhub_cli/catalog/schema.py) - *Updated in recent commit*
+- [anyllm.py](file://packages/cli/src/llmhub_cli/catalog/sources/anyllm.py) - *Added in recent commit*
+- [modelsdev.py](file://packages/cli/src/llmhub_cli/catalog/sources/modelsdev.py) - *Added in recent commit*
+- [arena.py](file://packages/cli/src/llmhub_cli/catalog/sources/arena.py) - *Added in recent commit*
+- [overrides.json](file://packages/cli/src/llmhub_cli/catalog/data/overrides.json) - *Updated in recent commit*
+- [catalog.py](file://packages/cli/src/llmhub_cli/commands/catalog.py) - *Updated in recent commit*
+- [__init__.py](file://packages/cli/src/llmhub_cli/catalog/__init__.py) - *Updated in recent commit*
+- [plan-catalog.md](file://packages/llmhub/src/llmhub/PLANS/plan-catalog.md) - *Design document*
 </cite>
+
+## Update Summary
+**Changes Made**
+- Updated documentation to reflect the new implementation in packages/cli/src/llmhub_cli/catalog/ with builder.py orchestrating data from multiple sources
+- Restructured data source modules into a dedicated sources/ directory
+- Added detailed implementation notes for the builder pipeline and source integration
+- Updated file references to point to the new CLI package location
+- Enhanced documentation of the environment loading mechanism and source coordination
+
+**New Sections Added**
+- Implementation Details section with updated builder pipeline description
+- Data Sources section with detailed source module descriptions
+
+**Deprecated/Removed Sections**
+- None
+
+**Source Tracking System Updates and New Source Files**
+- Updated all file references to point to the new CLI package location
+- Added new source files for the separated data source modules
+- Enhanced source annotations to reflect the updated implementation
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -81,13 +101,13 @@ K --> M
 ```
 
 **Diagram sources**
-- [builder.py](file://packages/llmhub/src/llmhub/catalog/builder.py#L302-L388)
-- [mapper.py](file://packages/llmhub/src/llmhub/catalog/mapper.py#L32-L114)
-- [cache.py](file://packages/llmhub/src/llmhub/catalog/cache.py#L37-L111)
+- [builder.py](file://packages/cli/src/llmhub_cli/catalog/builder.py#L302-L388)
+- [mapper.py](file://packages/cli/src/llmhub_cli/catalog/mapper.py#L32-L114)
+- [cache.py](file://packages/cli/src/llmhub_cli/catalog/cache.py#L37-L111)
 
 **Section sources**
-- [builder.py](file://packages/llmhub/src/llmhub/catalog/builder.py#L1-L388)
-- [schema.py](file://packages/llmhub/src/llmhub/catalog/schema.py#L1-L122)
+- [builder.py](file://packages/cli/src/llmhub_cli/catalog/builder.py#L1-L388)
+- [schema.py](file://packages/cli/src/llmhub_cli/catalog/schema.py#L1-L122)
 
 ## Data Sources
 
@@ -105,7 +125,7 @@ The any-llm source discovers models that are actually callable in the current en
 The system attempts to connect to common providers and builds a list of callable models. If any-llm is not available, the system gracefully falls back to empty model lists while continuing to process other data sources.
 
 **Section sources**
-- [anyllm_source.py](file://packages/llmhub/src/llmhub/catalog/anyllm_source.py#L1-L49)
+- [anyllm.py](file://packages/cli/src/llmhub_cli/catalog/sources/anyllm.py#L1-L49)
 
 ### models.dev Source
 
@@ -123,7 +143,7 @@ The models.dev source provides authoritative metadata including pricing, capabil
 The system normalizes the models.dev JSON structure into a flattened dictionary keyed by canonical IDs, ensuring consistent access patterns across the system.
 
 **Section sources**
-- [modelsdev_source.py](file://packages/llmhub/src/llmhub/catalog/modelsdev_source.py#L1-L142)
+- [modelsdev.py](file://packages/cli/src/llmhub_cli/catalog/sources/modelsdev.py#L1-L142)
 
 ### LMArena Source
 
@@ -140,7 +160,7 @@ The LMArena source provides quality scores and comparative performance metrics d
 The system integrates with the LMArena update script to maintain fresh leaderboard data, falling back to cached data when updates fail.
 
 **Section sources**
-- [arena_source.py](file://packages/llmhub/src/llmhub/catalog/arena_source.py#L1-L227)
+- [arena.py](file://packages/cli/src/llmhub_cli/catalog/sources/arena.py#L1-L227)
 
 ## Fusion Process
 
@@ -163,7 +183,7 @@ F-->>F : Create FusedRaw objects
 ```
 
 **Diagram sources**
-- [mapper.py](file://packages/llmhub/src/llmhub/catalog/mapper.py#L32-L114)
+- [mapper.py](file://packages/cli/src/llmhub_cli/catalog/mapper.py#L32-L114)
 
 ### ID Mapping Strategy
 
@@ -180,7 +200,7 @@ The fusion process employs a hierarchical matching strategy:
 - Fuzzy normalization removes hyphens, underscores, and spaces
 
 **Section sources**
-- [mapper.py](file://packages/llmhub/src/llmhub/catalog/mapper.py#L32-L114)
+- [mapper.py](file://packages/cli/src/llmhub_cli/catalog/mapper.py#L32-L114)
 
 ## Tier Derivation
 
@@ -204,7 +224,7 @@ H --> |No| J[Tier 5 - Most Expensive]
 ```
 
 **Diagram sources**
-- [builder.py](file://packages/llmhub/src/llmhub/catalog/builder.py#L114-L129)
+- [builder.py](file://packages/cli/src/llmhub_cli/catalog/builder.py#L114-L129)
 
 ### Quality Tier Calculation
 
@@ -219,7 +239,7 @@ Quality tiers use arena scores with fallback provider reputation:
 - **Creative Tier**: Initially matches quality tier, subject to refinement
 
 **Section sources**
-- [builder.py](file://packages/llmhub/src/llmhub/catalog/builder.py#L70-L300)
+- [builder.py](file://packages/cli/src/llmhub_cli/catalog/builder.py#L70-L300)
 
 ## Caching Mechanism
 
@@ -256,10 +276,10 @@ I --> J[Return Catalog]
 ```
 
 **Diagram sources**
-- [cache.py](file://packages/llmhub/src/llmhub/catalog/cache.py#L37-L111)
+- [cache.py](file://packages/cli/src/llmhub_cli/catalog/cache.py#L37-L111)
 
 **Section sources**
-- [cache.py](file://packages/llmhub/src/llmhub/catalog/cache.py#L1-L111)
+- [cache.py](file://packages/cli/src/llmhub_cli/catalog/cache.py#L1-L111)
 
 ## CanonicalModel Schema
 
@@ -320,7 +340,7 @@ The CanonicalModel represents the unified, enriched model record containing all 
 | `tags` | `list[str]` | Computed feature tags |
 
 **Section sources**
-- [schema.py](file://packages/llmhub/src/llmhub/catalog/schema.py#L68-L122)
+- [schema.py](file://packages/cli/src/llmhub_cli/catalog/schema.py#L68-L122)
 
 ## Usage Patterns
 
@@ -360,7 +380,7 @@ llmhub catalog refresh --ttl-hours 12
 The system provides a clean Python API for programmatic access:
 
 ```python
-from llmhub.catalog import build_catalog, load_cached_catalog
+from llmhub_cli.catalog import build_catalog, load_cached_catalog
 
 # Build fresh catalog
 catalog = build_catalog(ttl_hours=24, force_refresh=True)
@@ -374,8 +394,8 @@ for model in catalog.models:
 ```
 
 **Section sources**
-- [catalog_cmd.py](file://packages/llmhub/src/llmhub/commands/catalog_cmd.py#L1-L127)
-- [__init__.py](file://packages/llmhub/src/llmhub/catalog/__init__.py#L1-L17)
+- [catalog.py](file://packages/cli/src/llmhub_cli/commands/catalog.py#L1-L127)
+- [__init__.py](file://packages/cli/src/llmhub_cli/catalog/__init__.py#L1-L17)
 
 ## Implementation Details
 
@@ -383,14 +403,19 @@ for model in catalog.models:
 
 The main build pipeline coordinates all components in a sequential fashion:
 
-1. **Environment Setup**: Load `.env` files for API keys
+1. **Environment Setup**: Load `.env` files for API keys from common locations (current directory, project root, home directory)
 2. **Cache Check**: Attempt to load from disk cache
-3. **Source Loading**: Fetch data from all three sources
-4. **Fusion**: Align and combine data records
+3. **Source Loading**: Fetch data from all three sources through dedicated modules
+4. **Fusion**: Align and combine data records using the mapper
 5. **Statistics**: Compute global quantiles for tier derivation
 6. **Canonicalization**: Transform fused records to CanonicalModels
 7. **Caching**: Persist results to disk
 8. **Return**: Provide Catalog object
+
+The builder.py module orchestrates the entire process, with the build_catalog function serving as the main entrypoint that coordinates source loading, fusion, and tier derivation.
+
+**Section sources**
+- [builder.py](file://packages/cli/src/llmhub_cli/catalog/builder.py#L302-L388)
 
 ### Override System
 
@@ -402,8 +427,8 @@ The override system resolves naming inconsistencies between data sources:
 - **Priority Order**: Specific mappings take precedence over fuzzy matching
 
 **Section sources**
-- [builder.py](file://packages/llmhub/src/llmhub/catalog/builder.py#L302-L388)
-- [overrides.json](file://packages/llmhub/src/llmhub/catalog/data/overrides.json#L1-L32)
+- [builder.py](file://packages/cli/src/llmhub_cli/catalog/builder.py#L302-L388)
+- [overrides.json](file://packages/cli/src/llmhub_cli/catalog/data/overrides.json#L1-L32)
 
 ### Error Handling and Resilience
 
@@ -482,22 +507,22 @@ cat ~/.config/llmhub/catalog.json
 
 Test individual data sources:
 ```python
-from llmhub.catalog import build_catalog
+from llmhub_cli.catalog import build_catalog
 
 # Test any-llm source
-from llmhub.catalog.anyllm_source import load_anyllm_models
+from llmhub_cli.catalog.sources.anyllm import load_anyllm_models
 print(load_anyllm_models())
 
 # Test models.dev source
-from llmhub.catalog.modelsdev_source import fetch_modelsdev_json, normalize_modelsdev
+from llmhub_cli.catalog.sources.modelsdev import fetch_modelsdev_json, normalize_modelsdev
 data = fetch_modelsdev_json()
 print(normalize_modelsdev(data))
 
 # Test arena source
-from llmhub.catalog.arena_source import load_arena_models
+from llmhub_cli.catalog.sources.arena import load_arena_models
 print(load_arena_models())
 ```
 
 **Section sources**
-- [builder.py](file://packages/llmhub/src/llmhub/catalog/builder.py#L337-L350)
-- [cache.py](file://packages/llmhub/src/llmhub/catalog/cache.py#L94-L111)
+- [builder.py](file://packages/cli/src/llmhub_cli/catalog/builder.py#L337-L350)
+- [cache.py](file://packages/cli/src/llmhub_cli/catalog/cache.py#L94-L111)

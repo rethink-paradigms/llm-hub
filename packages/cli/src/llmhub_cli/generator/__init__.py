@@ -12,32 +12,30 @@ from llmhub_runtime import LLMHub
 from llmhub_cli.catalog.schema import CanonicalModel
 
 # Import all subproblems
-from .sp1_spec_schema import (
+from .spec import (
     ProjectSpec,
     load_project_spec,
     parse_project_spec,
     SpecSchemaError,
 )
-from .sp2_needs_interpreter import (
+from .needs import (
     interpret_needs,
     InterpreterError,
-)
-from .sp3_needs_schema import (
     RoleNeed,
     parse_role_needs,
     NeedsSchemaError,
 )
-from .sp4_catalog_view import (
+from .catalog_view import (
     CanonicalModel,
     load_catalog_view,
     CatalogViewError,
 )
-from .sp9_selector_orchestrator import (
+from .selection import (
     SelectionResult,
     SelectorOptions,
     select_for_role,
 )
-from .sp10_machine_config_emitter import (
+from .emitter import (
     MachineConfig,
     build_machine_config,
     write_machine_config,

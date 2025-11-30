@@ -5,7 +5,7 @@ Tests basic workflow: init -> generate -> env sync
 import pytest
 from pathlib import Path
 from typer.testing import CliRunner
-from llmhub.cli import app
+from llmhub_cli.cli import app
 from llmhub_cli.spec_models import load_spec
 from llmhub_cli.runtime_io import load_runtime
 

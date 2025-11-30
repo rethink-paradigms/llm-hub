@@ -1,1 +1,0 @@
-# Arena vendor module

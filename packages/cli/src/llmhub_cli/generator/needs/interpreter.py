@@ -1,4 +1,4 @@
-"""
+""" 
 SP2 - Needs Interpreter: LLM-based spec interpretation.
 
 Converts ProjectSpec to RoleNeeds using structured LLM output.
@@ -7,7 +7,8 @@ import json
 from typing import List
 from llmhub_runtime import LLMHub
 from llmhub_cli.generator.spec import ProjectSpec
-from llmhub_cli.generator.needs import RoleNeed, parse_role_needs
+from llmhub_cli.generator.needs.models import RoleNeed
+from llmhub_cli.generator.needs.schema import parse_role_needs
 from .errors import InterpreterError
 from .prompt import build_interpretation_prompt, ROLE_NEED_SCHEMA
 

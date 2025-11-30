@@ -2,18 +2,26 @@
 
 <cite>
 **Referenced Files in This Document**
-- [cli.py](file://packages/llmhub/src/llmhub/cli.py)
-- [setup_cmd.py](file://packages/llmhub/src/llmhub/commands/setup_cmd.py)
-- [spec_cmd.py](file://packages/llmhub/src/llmhub/commands/spec_cmd.py)
-- [runtime_cmd.py](file://packages/llmhub/src/llmhub/commands/runtime_cmd.py)
-- [catalog_cmd.py](file://packages/llmhub/src/llmhub/commands/catalog_cmd.py)
-- [test_cmd.py](file://packages/llmhub/src/llmhub/commands/test_cmd.py)
-- [env_cmd.py](file://packages/llmhub/src/llmhub/commands/env_cmd.py)
-- [context.py](file://packages/llmhub/src/llmhub/context.py)
-- [ux.py](file://packages/llmhub/src/llmhub/ux.py)
-- [generator_hook.py](file://packages/llmhub/src/llmhub/generator_hook.py)
-- [README.md](file://packages/llmhub/src/llmhub/generator/README.md)
+- [cli.py](file://packages/cli/src/llmhub_cli/cli.py) - *Updated in recent commit*
+- [setup.py](file://packages/cli/src/llmhub_cli/commands/setup.py) - *Updated in recent commit*
+- [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py) - *Updated in recent commit*
+- [runtime.py](file://packages/cli/src/llmhub_cli/commands/runtime.py) - *Updated in recent commit*
+- [catalog.py](file://packages/cli/src/llmhub_cli/commands/catalog.py) - *Updated in recent commit*
+- [test.py](file://packages/cli/src/llmhub_cli/commands/test.py) - *Updated in recent commit*
+- [env.py](file://packages/cli/src/llmhub_cli/commands/env.py) - *Updated in recent commit*
+- [context.py](file://packages/cli/src/llmhub_cli/context.py) - *Updated in recent commit*
+- [ux.py](file://packages/cli/src/llmhub_cli/ux.py) - *Updated in recent commit*
+- [generator_hook.py](file://packages/cli/src/llmhub_cli/generator_hook.py) - *Updated in recent commit*
+- [README.md](file://packages/cli/src/llmhub_cli/generator/README.md) - *Updated in recent commit*
 </cite>
+
+## Update Summary
+**Changes Made**
+- Updated all file references to reflect the new `llmhub_cli` namespace in the `packages/cli` directory
+- Modified command architecture section to reflect separation of CLI and runtime components
+- Updated section sources to point to new file locations in the `llmhub_cli` package
+- Adjusted diagram sources to reference updated implementation files
+- Maintained all existing documentation content while updating file paths and namespace references
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -67,10 +75,10 @@ G --> G2[env check]
 ```
 
 **Diagram sources**
-- [cli.py](file://packages/llmhub/src/llmhub/cli.py#L4-L45)
+- [cli.py](file://packages/cli/src/llmhub_cli/cli.py#L4-L45)
 
 **Section sources**
-- [cli.py](file://packages/llmhub/src/llmhub/cli.py#L1-L67)
+- [cli.py](file://packages/cli/src/llmhub_cli/cli.py#L1-L67)
 
 ## Project Bootstrapping Commands
 
@@ -103,7 +111,7 @@ Next steps:
 ```
 
 **Section sources**
-- [setup_cmd.py](file://packages/llmhub/src/llmhub/commands/setup_cmd.py#L121-L161)
+- [setup.py](file://packages/cli/src/llmhub_cli/commands/setup.py#L121-L161)
 
 ### `setup` - Interactive Project Setup
 
@@ -157,7 +165,7 @@ Configuring llm.inference
 ```
 
 **Section sources**
-- [setup_cmd.py](file://packages/llmhub/src/llmhub/commands/setup_cmd.py#L16-L118)
+- [setup.py](file://packages/cli/src/llmhub_cli/commands/setup.py#L16-L118)
 
 ### `status` - Project Health Check
 
@@ -191,7 +199,7 @@ Roles: 3 total
 ```
 
 **Section sources**
-- [setup_cmd.py](file://packages/llmhub/src/llmhub/commands/setup_cmd.py#L164-L215)
+- [setup.py](file://packages/cli/src/llmhub_cli/commands/setup.py#L164-L215)
 
 ### `path` - Path Resolution
 
@@ -214,7 +222,7 @@ Env example: /path/to/project/.env.example
 ```
 
 **Section sources**
-- [setup_cmd.py](file://packages/llmhub/src/llmhub/commands/setup_cmd.py#L198-L207)
+- [setup.py](file://packages/cli/src/llmhub_cli/commands/setup.py#L198-L207)
 
 ## Specification Management
 
@@ -253,7 +261,7 @@ Roles in my-application
 ```
 
 **Section sources**
-- [spec_cmd.py](file://packages/llmhub/src/llmhub/commands/spec_cmd.py#L13-L34)
+- [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py#L13-L34)
 
 ### `spec validate` - Specification Validation
 
@@ -287,7 +295,7 @@ llmhub spec validate
 ```
 
 **Section sources**
-- [spec_cmd.py](file://packages/llmhub/src/llmhub/commands/spec_cmd.py#L36-L53)
+- [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py#L36-L53)
 
 ### `roles` - List All Roles
 
@@ -304,7 +312,7 @@ llmhub roles
 Same as `spec show` but focused solely on role information.
 
 **Section sources**
-- [spec_cmd.py](file://packages/llmhub/src/llmhub/commands/spec_cmd.py#L56-L69)
+- [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py#L56-L69)
 
 ### `add-role` - Add New Role
 
@@ -350,7 +358,7 @@ Select preferred providers: 1,2
 ```
 
 **Section sources**
-- [spec_cmd.py](file://packages/llmhub/src/llmhub/commands/spec_cmd.py#L72-L139)
+- [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py#L72-L139)
 
 ### `edit-role` - Modify Existing Role
 
@@ -369,7 +377,7 @@ llmhub edit-role <role-name>
 - Provider preferences
 
 **Section sources**
-- [spec_cmd.py](file://packages/llmhub/src/llmhub/commands/spec_cmd.py#L145-L189)
+- [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py#L145-L189)
 
 ### `rm-role` - Remove Role
 
@@ -388,7 +396,7 @@ llmhub rm-role <role-name>
 - Clear messaging about subsequent generation requirements
 
 **Section sources**
-- [spec_cmd.py](file://packages/llmhub/src/llmhub/commands/spec_cmd.py#L195-L223)
+- [spec.py](file://packages/cli/src/llmhub_cli/commands/spec.py#L195-L223)
 
 ## Runtime Generation
 
@@ -433,7 +441,7 @@ M --> N[Save llmhub.yaml]
 ```
 
 **Diagram sources**
-- [README.md](file://packages/llmhub/src/llmhub/generator/README.md#L59-L73)
+- [README.md](file://packages/cli/src/llmhub_cli/generator/README.md#L59-L73)
 
 **Dry Run Example:**
 ```bash
@@ -478,7 +486,7 @@ llm.preprocess: Selected gpt-4o-mini (cost: 1/5, quality: 3/5) for fast processi
 ```
 
 **Section sources**
-- [runtime_cmd.py](file://packages/llmhub/src/llmhub/commands/runtime_cmd.py#L13-L69)
+- [runtime.py](file://packages/cli/src/llmhub_cli/commands/runtime.py#L13-L69)
 
 ### `runtime show` - Display Runtime Configuration
 
@@ -506,7 +514,7 @@ Roles
 ```
 
 **Section sources**
-- [runtime_cmd.py](file://packages/llmhub/src/llmhub/commands/runtime_cmd.py#L78-L96)
+- [runtime.py](file://packages/cli/src/llmhub_cli/commands/runtime.py#L78-L96)
 
 ### `runtime diff` - Compare Spec vs Runtime
 
@@ -561,7 +569,7 @@ Roles in both (3):
 ```
 
 **Section sources**
-- [runtime_cmd.py](file://packages/llmhub/src/llmhub/commands/runtime_cmd.py#L99-L155)
+- [runtime.py](file://packages/cli/src/llmhub_cli/commands/runtime.py#L99-L155)
 
 ## Model Catalog Management
 
@@ -615,7 +623,7 @@ Claude 3.5 Sonnet
 ```
 
 **Section sources**
-- [catalog_cmd.py](file://packages/llmhub/src/llmhub/commands/catalog_cmd.py#L51-L127)
+- [catalog.py](file://packages/cli/src/llmhub_cli/commands/catalog.py#L51-L127)
 
 ### `catalog refresh` - Update Model Catalog
 
@@ -655,7 +663,7 @@ Models by provider:
 ```
 
 **Section sources**
-- [catalog_cmd.py](file://packages/llmhub/src/llmhub/commands/catalog_cmd.py#L16-L48)
+- [catalog.py](file://packages/cli/src/llmhub_cli/commands/catalog.py#L16-L48)
 
 ## Testing and Diagnostics
 
@@ -725,7 +733,7 @@ llmhub test --role llm.inference --prompt "Hello" --json
 - Rate limiting
 
 **Section sources**
-- [test_cmd.py](file://packages/llmhub/src/llmhub/commands/test_cmd.py#L18-L118)
+- [test.py](file://packages/cli/src/llmhub_cli/commands/test.py#L18-L118)
 
 ### `doctor` - Comprehensive Health Check
 
@@ -780,7 +788,7 @@ Your LLMHub setup is ready to use.
 ```
 
 **Section sources**
-- [test_cmd.py](file://packages/llmhub/src/llmhub/commands/test_cmd.py#L125-L232)
+- [test.py](file://packages/cli/src/llmhub_cli/commands/test.py#L125-L232)
 
 ## Environment Management
 
@@ -802,7 +810,7 @@ llmhub env sync
 - Overwrites existing variables with current requirements
 
 **Section sources**
-- [env_cmd.py](file://packages/llmhub/src/llmhub/commands/env_cmd.py#L13-L43)
+- [env.py](file://packages/cli/src/llmhub_cli/commands/env.py#L13-L43)
 
 ### `env check` - Environment Variable Validation
 
@@ -842,7 +850,7 @@ Set missing variables in .env or export them
 ```
 
 **Section sources**
-- [env_cmd.py](file://packages/llmhub/src/llmhub/commands/env_cmd.py#L44-L80)
+- [env.py](file://packages/cli/src/llmhub_cli/commands/env.py#L44-L80)
 
 ## Command Architecture
 
@@ -869,7 +877,7 @@ I --> L[env_example_path = root/.env.example]
 ```
 
 **Diagram sources**
-- [context.py](file://packages/llmhub/src/llmhub/context.py#L27-L46)
+- [context.py](file://packages/cli/src/llmhub_cli/context.py#L27-L46)
 
 **Path Resolution Priority:**
 1. `llmhub.spec.yaml` file in directory or parents
@@ -878,7 +886,7 @@ I --> L[env_example_path = root/.env.example]
 4. Current directory as fallback
 
 **Section sources**
-- [context.py](file://packages/llmhub/src/llmhub/context.py#L49-L90)
+- [context.py](file://packages/cli/src/llmhub_cli/context.py#L49-L90)
 
 ### Command Registration and Typing
 
@@ -896,7 +904,7 @@ catalog_app = typer.Typer(help="Model catalog management")
 ```
 
 **Section sources**
-- [cli.py](file://packages/llmhub/src/llmhub/cli.py#L4-L45)
+- [cli.py](file://packages/cli/src/llmhub_cli/cli.py#L4-L45)
 
 ## Error Handling and Troubleshooting
 
@@ -982,5 +990,5 @@ catalog_app = typer.Typer(help="Model catalog management")
 - Review proxy configuration if applicable
 
 **Section sources**
-- [test_cmd.py](file://packages/llmhub/src/llmhub/commands/test_cmd.py#L125-L232)
-- [env_cmd.py](file://packages/llmhub/src/llmhub/commands/env_cmd.py#L44-L80)
+- [test.py](file://packages/cli/src/llmhub_cli/commands/test.py#L125-L232)
+- [env.py](file://packages/cli/src/llmhub_cli/commands/env.py#L44-L80)

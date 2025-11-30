@@ -102,7 +102,7 @@ The catalog is used by:
 ### From PyPI (when published)
 
 ```bash
-pip install rethink-llmhub llmhub-runtime
+pip install rethink-llmhub rethink-llmhub-runtime
 ```
 
 ### From source (current development)
@@ -113,8 +113,8 @@ git clone https://github.com/rethink-paradigms/llm-hub.git
 cd llm-hub
 
 # Install both packages in editable mode
-pip install -e packages/llmhub_runtime
-pip install -e packages/llmhub
+pip install -e packages/runtime
+pip install -e packages/cli
 
 # Or use the Makefile
 make install

@@ -2,18 +2,40 @@
 
 <cite>
 **Referenced Files in This Document**
-- [hub.py](file://packages/llmhub_runtime/src/llmhub_runtime/hub.py)
-- [config_loader.py](file://packages/llmhub_runtime/src/llmhub_runtime/config_loader.py)
-- [resolver.py](file://packages/llmhub_runtime/src/llmhub_runtime/resolver.py)
-- [models.py](file://packages/llmhub_runtime/src/llmhub_runtime/models.py)
-- [errors.py](file://packages/llmhub_runtime/src/llmhub_runtime/errors.py)
-- [test_hub_basic.py](file://packages/llmhub_runtime/tests/test_hub_basic.py)
-- [test_config_loader.py](file://packages/llmhub_runtime/tests/test_config_loader.py)
-- [test_resolver.py](file://packages/llmhub_runtime/tests/test_resolver.py)
-- [llmhub.yaml](file://packages/llmhub_runtime/tests/fixtures/llmhub.yaml)
-- [README.md](file://packages/llmhub_runtime/README.md)
-- [pyproject.toml](file://packages/llmhub_runtime/pyproject.toml)
+- [hub.py](file://packages/runtime/src/llmhub_runtime/hub.py) - *Updated in recent commit*
+- [config_loader.py](file://packages/runtime/src/llmhub_runtime/config_loader.py) - *Updated in recent commit*
+- [resolver.py](file://packages/runtime/src/llmhub_runtime/resolver.py) - *Updated in recent commit*
+- [models.py](file://packages/runtime/src/llmhub_runtime/models.py) - *Updated in recent commit*
+- [errors.py](file://packages/runtime/src/llmhub_runtime/errors.py) - *Updated in recent commit*
+- [test_hub_basic.py](file://packages/runtime/tests/test_hub_basic.py) - *Updated in recent commit*
+- [test_config_loader.py](file://packages/runtime/tests/test_config_loader.py) - *Updated in recent commit*
+- [test_resolver.py](file://packages/runtime/tests/test_resolver.py) - *Updated in recent commit*
+- [llmhub.yaml](file://packages/runtime/tests/fixtures/llmhub.yaml) - *Updated in recent commit*
+- [README.md](file://packages/runtime/README.md) - *Updated in recent commit*
+- [pyproject.toml](file://packages/runtime/pyproject.toml) - *Updated in recent commit*
+- [CHANGELOG.md](file://packages/runtime/CHANGELOG.md) - *Added in recent commit*
+- [MIGRATION_SUMMARY.md](file://MIGRATION_SUMMARY.md) - *Added in recent commit*
 </cite>
+
+## Update Summary
+**Changes Made**
+- Updated all file paths to reflect new package location in `packages/runtime/`
+- Updated PyPI package name from `llmhub-runtime` to `rethink-llmhub-runtime`
+- Updated repository structure references to reflect separation of runtime and CLI packages
+- Added migration guide information for package installation changes
+- Updated source references to point to new file locations
+
+**New Sections Added**
+- None
+
+**Deprecated/Removed Sections**
+- None
+
+**Source Tracking System Updates and New Source Files**
+- Updated all file references to point to new location in `packages/runtime/`
+- Added CHANGELOG.md and MIGRATION_SUMMARY.md to referenced files
+- Updated pyproject.toml references to show new package name
+- Maintained same import namespace `llmhub_runtime` despite package relocation
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -35,7 +57,7 @@
 
 The `llmhub_runtime` library is a lightweight Python package designed for executing Large Language Model (LLM) calls based on role-based configuration. It serves as a runtime component that delegates all provider-specific logic to the `any-llm` SDK while providing a clean abstraction layer for application developers.
 
-The library follows a three-layer architecture pattern that separates concerns between configuration loading, role resolution, and execution, enabling provider-agnostic LLM calls through a simple role-based interface.
+The library follows a three-layer architecture pattern that separates concerns between configuration loading, role resolution, and execution, enabling provider-agnostic LLM calls through a simple role-based interface. This documentation has been updated to reflect the new runtime library architecture with the package separated into its own `packages/runtime` directory.
 
 ## Architecture Overview
 
@@ -74,9 +96,9 @@ AnyLLM --> Providers
 ```
 
 **Diagram sources**
-- [hub.py](file://packages/llmhub_runtime/src/llmhub_runtime/hub.py#L17-L189)
-- [resolver.py](file://packages/llmhub_runtime/src/llmhub_runtime/resolver.py#L5-L44)
-- [config_loader.py](file://packages/llmhub_runtime/src/llmhub_runtime/config_loader.py#L6-L43)
+- [hub.py](file://packages/runtime/src/llmhub_runtime/hub.py#L17-L189)
+- [resolver.py](file://packages/runtime/src/llmhub_runtime/resolver.py#L5-L44)
+- [config_loader.py](file://packages/runtime/src/llmhub_runtime/config_loader.py#L6-L43)
 
 ## Three-Layer Architecture
 
@@ -114,7 +136,7 @@ RuntimeConfig --> RoleDefaultsConfig
 ```
 
 **Diagram sources**
-- [models.py](file://packages/llmhub_runtime/src/llmhub_runtime/models.py#L28-L41)
+- [models.py](file://packages/runtime/src/llmhub_runtime/models.py#L28-L41)
 
 The configuration loading process involves:
 - YAML parsing using PyYAML
@@ -123,8 +145,8 @@ The configuration loading process involves:
 - Environment variable validation when enabled
 
 **Section sources**
-- [config_loader.py](file://packages/llmhub_runtime/src/llmhub_runtime/config_loader.py#L6-L43)
-- [models.py](file://packages/llmhub_runtime/src/llmhub_runtime/models.py#L28-L41)
+- [config_loader.py](file://packages/runtime/src/llmhub_runtime/config_loader.py#L6-L43)
+- [models.py](file://packages/runtime/src/llmhub_runtime/models.py#L28-L41)
 
 ### Layer 2: Role Resolution (resolver.py)
 
@@ -148,7 +170,7 @@ ReturnResolved --> End
 ```
 
 **Diagram sources**
-- [resolver.py](file://packages/llmhub_runtime/src/llmhub_runtime/resolver.py#L5-L44)
+- [resolver.py](file://packages/runtime/src/llmhub_runtime/resolver.py#L5-L44)
 
 Key features of the resolution engine:
 - Role-to-provider mapping with fallback to defaults
@@ -157,7 +179,7 @@ Key features of the resolution engine:
 - Type-safe parameter handling
 
 **Section sources**
-- [resolver.py](file://packages/llmhub_runtime/src/llmhub_runtime/resolver.py#L5-L44)
+- [resolver.py](file://packages/runtime/src/llmhub_runtime/resolver.py#L5-L44)
 
 ### Layer 3: Execution (hub.py)
 
@@ -182,10 +204,10 @@ Note over Hub,Hooks : Error handling and timing can be added here
 ```
 
 **Diagram sources**
-- [hub.py](file://packages/llmhub_runtime/src/llmhub_runtime/hub.py#L61-L126)
+- [hub.py](file://packages/runtime/src/llmhub_runtime/hub.py#L61-L126)
 
 **Section sources**
-- [hub.py](file://packages/llmhub_runtime/src/llmhub_runtime/hub.py#L17-L189)
+- [hub.py](file://packages/runtime/src/llmhub_runtime/hub.py#L17-L189)
 
 ## Public API Documentation
 
@@ -228,7 +250,7 @@ Generates embeddings for the specified input using the configured role.
 **Returns:** Raw embedding response from any-llm SDK
 
 **Section sources**
-- [hub.py](file://packages/llmhub_runtime/src/llmhub_runtime/hub.py#L18-L189)
+- [hub.py](file://packages/runtime/src/llmhub_runtime/hub.py#L18-L189)
 
 ## Configuration System
 
@@ -266,7 +288,7 @@ RuntimeConfig ||--o| RoleDefaultsConfig : optional
 ```
 
 **Diagram sources**
-- [models.py](file://packages/llmhub_runtime/src/llmhub_runtime/models.py#L28-L41)
+- [models.py](file://packages/runtime/src/llmhub_runtime/models.py#L28-L41)
 
 ### Configuration Loading Process
 
@@ -276,8 +298,8 @@ The configuration loading follows a two-stage process:
 2. **Validation**: Pydantic model validation with detailed error reporting
 
 **Section sources**
-- [config_loader.py](file://packages/llmhub_runtime/src/llmhub_runtime/config_loader.py#L6-L43)
-- [models.py](file://packages/llmhub_runtime/src/llmhub_runtime/models.py#L28-L41)
+- [config_loader.py](file://packages/runtime/src/llmhub_runtime/config_loader.py#L6-L43)
+- [models.py](file://packages/runtime/src/llmhub_runtime/models.py#L28-L41)
 
 ## Role Resolution Engine
 
@@ -304,7 +326,7 @@ Success --> End
 ```
 
 **Diagram sources**
-- [resolver.py](file://packages/llmhub_runtime/src/llmhub_runtime/resolver.py#L5-L44)
+- [resolver.py](file://packages/runtime/src/llmhub_runtime/resolver.py#L5-L44)
 
 ### Parameter Override Mechanism
 
@@ -314,7 +336,7 @@ The resolution engine supports parameter overrides through a merge strategy:
 - Final merged parameters passed to any-llm
 
 **Section sources**
-- [resolver.py](file://packages/llmhub_runtime/src/llmhub_runtime/resolver.py#L5-L44)
+- [resolver.py](file://packages/runtime/src/llmhub_runtime/resolver.py#L5-L44)
 
 ## Execution Layer
 
@@ -336,7 +358,7 @@ Note over LLMHub,Provider : All provider logic handled by any-llm
 ```
 
 **Diagram sources**
-- [hub.py](file://packages/llmhub_runtime/src/llmhub_runtime/hub.py#L98-L108)
+- [hub.py](file://packages/runtime/src/llmhub_runtime/hub.py#L98-L108)
 
 ### Error Propagation
 
@@ -347,7 +369,7 @@ The execution layer propagates errors from any-llm while maintaining the library
 - All errors are re-raised with original traceback preserved
 
 **Section sources**
-- [hub.py](file://packages/llmhub_runtime/src/llmhub_runtime/hub.py#L98-L112)
+- [hub.py](file://packages/runtime/src/llmhub_runtime/hub.py#L98-L112)
 
 ## Hook System and Observability
 
@@ -385,8 +407,8 @@ LLMHub --> CallResult : creates
 ```
 
 **Diagram sources**
-- [hub.py](file://packages/llmhub_runtime/src/llmhub_runtime/hub.py#L14-L16)
-- [hub.py](file://packages/llmhub_runtime/src/llmhub_runtime/hub.py#L61-L126)
+- [hub.py](file://packages/runtime/src/llmhub_runtime/hub.py#L14-L16)
+- [hub.py](file://packages/runtime/src/llmhub_runtime/hub.py#L61-L126)
 
 ### Hook Implementation Pattern
 
@@ -396,7 +418,7 @@ Both `completion()` and `embedding()` methods support the same hook pattern:
 2. **After Call Hook**: Executed with call result containing success/failure status
 
 **Section sources**
-- [hub.py](file://packages/llmhub_runtime/src/llmhub_runtime/hub.py#L80-L126)
+- [hub.py](file://packages/runtime/src/llmhub_runtime/hub.py#L80-L126)
 
 ## Error Handling and Validation
 
@@ -432,7 +454,7 @@ LLMHubRuntimeError <|-- EnvVarMissingError
 ```
 
 **Diagram sources**
-- [errors.py](file://packages/llmhub_runtime/src/llmhub_runtime/errors.py#L1-L20)
+- [errors.py](file://packages/runtime/src/llmhub_runtime/errors.py#L1-L20)
 
 ### Environment Validation
 
@@ -444,8 +466,8 @@ The library supports strict environment validation:
 - **Clear Error Messages**: Specific feedback about missing environment variables
 
 **Section sources**
-- [errors.py](file://packages/llmhub_runtime/src/llmhub_runtime/errors.py#L1-L20)
-- [hub.py](file://packages/llmhub_runtime/src/llmhub_runtime/hub.py#L52-L60)
+- [errors.py](file://packages/runtime/src/llmhub_runtime/errors.py#L1-L20)
+- [hub.py](file://packages/runtime/src/llmhub_runtime/hub.py#L52-L60)
 
 ## Design Principles
 
@@ -473,8 +495,8 @@ The runtime deliberately excludes:
 - **Caching**: No built-in caching mechanisms
 
 **Section sources**
-- [README.md](file://packages/llmhub_runtime/README.md#L7-L10)
-- [pyproject.toml](file://packages/llmhub_runtime/pyproject.toml#L27-L31)
+- [README.md](file://packages/runtime/README.md#L7-L10)
+- [pyproject.toml](file://packages/runtime/pyproject.toml#L27-L31)
 
 ## Performance and Reliability
 
@@ -504,9 +526,15 @@ Execution performance characteristics:
 
 For production deployment:
 - **Python Version**: Python 3.10+ required
-- **Dependencies**: Install with `pip install llmhub-runtime any-llm-sdk`
+- **Dependencies**: Install with `pip install rethink-llmhub-runtime any-llm-sdk`
 - **Configuration**: Ensure llmhub.yaml is properly configured and accessible
 - **Environment Variables**: Configure required API keys as specified in providers
+
+**Updated** The PyPI package name has changed from `llmhub-runtime` to `rethink-llmhub-runtime` but the import namespace remains `llmhub_runtime`.
+
+**Section sources**
+- [pyproject.toml](file://packages/runtime/pyproject.toml#L6-L31)
+- [CHANGELOG.md](file://packages/runtime/CHANGELOG.md#L5-L9)
 
 ### Monitoring and Observability
 
@@ -577,8 +605,8 @@ hub = LLMHub(
 ```
 
 **Section sources**
-- [test_hub_basic.py](file://packages/llmhub_runtime/tests/test_hub_basic.py#L40-L79)
-- [llmhub.yaml](file://packages/llmhub_runtime/tests/fixtures/llmhub.yaml#L1-L51)
+- [test_hub_basic.py](file://packages/runtime/tests/test_hub_basic.py#L40-L79)
+- [llmhub.yaml](file://packages/runtime/tests/fixtures/llmhub.yaml#L1-L51)
 
 ## Conclusion
 
@@ -591,4 +619,10 @@ Key strengths include:
 - **Reliability**: Robust error handling and validation
 - **Flexibility**: Parameter overrides and environment validation
 
-The library serves as an ideal foundation for building LLM-powered applications while maintaining the freedom to evolve configurations independently of application code.
+The library serves as an ideal foundation for building LLM-powered applications while maintaining the freedom to evolve configurations independently of application code. The recent architectural changes have separated the runtime into its own `packages/runtime` directory with the PyPI package renamed to `rethink-llmhub-runtime`, while maintaining the same import namespace `llmhub_runtime` for backward compatibility.
+
+**Updated** The package has been moved to `packages/runtime/` and renamed to `rethink-llmhub-runtime` on PyPI, but the import namespace remains unchanged at `llmhub_runtime`.
+
+**Section sources**
+- [MIGRATION_SUMMARY.md](file://MIGRATION_SUMMARY.md#L1-L294)
+- [CHANGELOG.md](file://packages/runtime/CHANGELOG.md#L5-L9)

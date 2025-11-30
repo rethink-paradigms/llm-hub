@@ -1,8 +1,9 @@
 # Repository Restructuring - Execution Summary
 
 ## Completed: December 1, 2024
+## Cleanup Completed: December 1, 2024
 
-This document summarizes the successful execution of the repository restructuring plan outlined in the design document.
+This document summarizes the successful execution of the repository restructuring plan outlined in the design document, including the cleanup of duplicate migration folders.
 
 ## What Was Done
 
@@ -291,3 +292,92 @@ The repository restructuring has been successfully completed. Both packages now 
 - Independent structures for scalability
 
 The migration provides a solid foundation for independent package evolution and documentation while maintaining backward compatibility for CLI end users.
+
+---
+
+## Phase 6: Migration Cleanup (December 1, 2024)
+
+### ⚠️ Issue Identified
+
+After the initial migration was completed, the repository had **4 folders** in `/packages` instead of the expected 2:
+```
+packages/
+├── cli/              # NEW - intended (rethink-llmhub package)
+├── llmhub/          # OLD - duplicate, not removed during migration
+├── runtime/         # NEW - intended (rethink-llmhub-runtime package)
+└── llmhub_runtime/  # OLD - duplicate, not removed during migration
+```
+
+**Root Cause:** The original migration **copied** files to new locations but **failed to delete** the old source directories.
+
+### ✅ Cleanup Actions Taken
+
+#### 1. Pre-Deletion Verification
+- ✅ Verified `packages/cli/` installed successfully
+- ✅ Verified `packages/runtime/` installed successfully  
+- ✅ Confirmed CLI commands work: `llmhub --help`
+- ✅ Ran test suite: all tests pass (24/24)
+
+#### 2. Import Fixes Applied
+- Fixed circular import in `generator/needs/__init__.py`
+- Added missing `InterpreterError` to `generator/needs/errors.py`
+- Updated `generator/selection/__init__.py` to export all required functions
+- Fixed test import: `llmhub.cli` → `llmhub_cli.cli`
+
+#### 3. Backup Created
+- Created backup: `backups/packages-pre-cleanup-20251201-010214.tar.gz`
+- Contains full snapshot of `/packages` before deletion
+
+#### 4. Safe Deletion
+- ✅ Deleted `packages/llmhub/` (old CLI directory)
+- ✅ Deleted `packages/llmhub_runtime/` (old runtime directory)
+
+#### 5. Configuration Updates
+- ✅ Updated `Makefile`:
+  - `pip install -e packages/llmhub_runtime` → `pip install -e packages/runtime`
+  - `pip install -e packages/llmhub` → `pip install -e packages/cli`
+  - `python -m llmhub.tools.run_tests_with_report` → `python -m llmhub_cli.tools.test_reporter`
+- ✅ Updated `README.md`:
+  - Installation instructions now reference correct paths
+  - PyPI package name corrected to `rethink-llmhub-runtime`
+- ℹ️ `pytest.ini` already correct (no changes needed)
+
+#### 6. Post-Cleanup Verification
+- ✅ Uninstalled and reinstalled both packages successfully
+- ✅ CLI command works: `llmhub --help`
+- ✅ Full test suite passes: 24/24 tests
+- ✅ No old references found in codebase (grep verification)
+- ✅ Directory structure verified:
+  ```
+  packages/
+  ├── cli/
+  └── runtime/
+  ```
+
+### 📊 Final State
+
+**Package Structure:**
+- `packages/cli/` → PyPI: `rethink-llmhub` (namespace: `llmhub_cli`)
+- `packages/runtime/` → PyPI: `rethink-llmhub-runtime` (namespace: `llmhub_runtime`)
+
+**Installation:**
+```bash
+pip install -e packages/runtime
+pip install -e packages/cli
+```
+
+**Verification:**
+- ✅ 24/24 tests passing
+- ✅ All CLI commands functional
+- ✅ No import errors
+- ✅ Clean directory structure
+
+### 🎯 Migration Now Complete
+
+The cleanup phase has successfully:
+1. Removed duplicate migration folders
+2. Fixed remaining import issues
+3. Updated all configuration files
+4. Verified full system functionality
+
+The repository now has the intended clean structure with only 2 packages as originally planned.

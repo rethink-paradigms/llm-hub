@@ -1,4 +1,9 @@
-"""SP3 - Needs Schema: Error definitions."""
+"""SP2/SP3 - Needs Schema: Error definitions."""
+
+
+class InterpreterError(Exception):
+    """Raised when needs interpretation via LLM fails."""
+    pass
 
 
 class NeedsSchemaError(Exception):

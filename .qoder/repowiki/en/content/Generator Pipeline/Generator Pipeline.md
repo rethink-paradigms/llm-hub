@@ -1,25 +1,27 @@
-# Generator Pipeline Architecture Documentation
+# Generator Pipeline
 
 <cite>
 **Referenced Files in This Document**
-- [packages/llmhub/src/llmhub/generator/__init__.py](file://packages/llmhub/src/llmhub/generator/__init__.py)
-- [packages/llmhub/src/llmhub/generator/spec.md](file://packages/llmhub/src/llmhub/generator/spec.md)
-- [packages/llmhub/src/llmhub/spec_models.py](file://packages/llmhub/src/llmhub/spec_models.py)
-- [packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py](file://packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py)
-- [packages/llmhub/src/llmhub/generator/sp2_needs_interpreter/interpreter.py](file://packages/llmhub/src/llmhub/generator/sp2_needs_interpreter/interpreter.py)
-- [packages/llmhub/src/llmhub/generator/sp3_needs_schema/models.py](file://packages/llmhub/src/llmhub/generator/sp3_needs_schema/models.py)
-- [packages/llmhub/src/llmhub/generator/sp4_catalog_view/loader.py](file://packages/llmhub/src/llmhub/generator/sp4_catalog_view/loader.py)
-- [packages/llmhub/src/llmhub/generator/sp5_filter_candidates/filter.py](file://packages/llmhub/src/llmhub/generator/sp5_filter_candidates/filter.py)
-- [packages/llmhub/src/llmhub/generator/sp6_weights/calculator.py](file://packages/llmhub/src/llmhub/generator/sp6_weights/calculator.py)
-- [packages/llmhub/src/llmhub/generator/sp7_scoring_engine/scorer.py](file://packages/llmhub/src/llmhub/generator/sp7_scoring_engine/scorer.py)
-- [packages/llmhub/src/llmhub/generator/sp8_relaxation_engine/relaxer.py](file://packages/llmhub/src/llmhub/generator/sp8_relaxation_engine/relaxer.py)
-- [packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/orchestrator.py](file://packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/orchestrator.py)
-- [packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/builder.py](file://packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/builder.py)
-- [packages/llmhub/src/llmhub/catalog/schema.py](file://packages/llmhub/src/llmhub/catalog/schema.py)
-- [packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/models.py](file://packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/models.py)
-- [packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/models.py](file://packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/models.py)
-- [packages/llmhub/src/llmhub/catalog/cache.py](file://packages/llmhub/src/llmhub/catalog/cache.py)
+- [packages/cli/src/llmhub_cli/generator/spec/models.py](file://packages/cli/src/llmhub_cli/generator/spec/models.py) - *Updated in modularized generator structure*
+- [packages/cli/src/llmhub_cli/generator/spec/parser.py](file://packages/cli/src/llmhub_cli/generator/spec/parser.py) - *Updated in modularized generator structure*
+- [packages/cli/src/llmhub_cli/generator/needs/interpreter.py](file://packages/cli/src/llmhub_cli/generator/needs/interpreter.py) - *Updated in modularized generator structure*
+- [packages/cli/src/llmhub_cli/generator/selection/filter.py](file://packages/cli/src/llmhub_cli/generator/selection/filter.py) - *Updated in modularized generator structure*
+- [packages/cli/src/llmhub_cli/generator/selection/scorer.py](file://packages/cli/src/llmhub_cli/generator/selection/scorer.py) - *Updated in modularized generator structure*
+- [packages/cli/src/llmhub_cli/generator/selection/relaxer.py](file://packages/cli/src/llmhub_cli/generator/selection/relaxer.py) - *Updated in modularized generator structure*
+- [packages/cli/src/llmhub_cli/generator/selection/selector.py](file://packages/cli/src/llmhub_cli/generator/selection/selector.py) - *Updated in modularized generator structure*
+- [packages/cli/src/llmhub_cli/generator/emitter/builder.py](file://packages/cli/src/llmhub_cli/generator/emitter/builder.py) - *Updated in modularized generator structure*
+- [packages/cli/src/llmhub_cli/generator/emitter/models.py](file://packages/cli/src/llmhub_cli/generator/emitter/models.py) - *Updated in modularized generator structure*
+- [packages/cli/src/llmhub_cli/generator/docs/PIPELINE.md](file://packages/cli/src/llmhub_cli/generator/docs/PIPELINE.md) - *Updated in modularized generator structure*
+- [packages/cli/src/llmhub_cli/generator/__init__.py](file://packages/cli/src/llmhub_cli/generator/__init__.py) - *Updated in modularized generator structure*
 </cite>
+
+## Update Summary
+**Changes Made**
+- Updated file paths and module references to reflect the new modularized generator structure in `packages/cli/src/llmhub_cli/generator/`
+- Reorganized documentation to align with the new directory structure (spec, needs, selection, emitter, catalog_view)
+- Updated section sources to reference new file locations
+- Maintained all architectural concepts and data flow descriptions
+- Updated diagram sources to reflect current implementation
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -37,7 +39,7 @@
 
 The Generator Pipeline is a sophisticated 10-step transformation system that converts high-level human specifications into executable runtime configurations for the LLM Hub Runtime. This pipeline serves as the bridge between human-readable requirements and machine-executable configurations, providing a structured, deterministic approach to model selection and configuration generation.
 
-The pipeline follows a modular architecture where each step (SP1-SP10) handles specific aspects of the transformation process, from spec parsing to final config emission. Each step maintains clear input/output contracts and can be independently tested and validated.
+The pipeline follows a modular architecture where each step (SP1-SP10) handles specific aspects of the transformation process, from spec parsing to final config emission. Each step maintains clear input/output contracts and can be independently tested and validated. The implementation has been modularized into the `packages/cli/src/llmhub_cli/generator/` directory with dedicated submodules for each functional area.
 
 ## Pipeline Overview
 
@@ -61,12 +63,12 @@ N["Catalog Module"] -.-> E
 ```
 
 **Diagram sources**
-- [packages/llmhub/src/llmhub/generator/__init__.py](file://packages/llmhub/src/llmhub/generator/__init__.py#L52-L118)
-- [packages/llmhub/src/llmhub/generator/spec.md](file://packages/llmhub/src/llmhub/generator/spec.md#L43-L56)
+- [packages/cli/src/llmhub_cli/generator/__init__.py](file://packages/cli/src/llmhub_cli/generator/__init__.py)
+- [packages/cli/src/llmhub_cli/generator/docs/PIPELINE.md](file://packages/cli/src/llmhub_cli/generator/docs/PIPELINE.md)
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/spec.md](file://packages/llmhub/src/llmhub/generator/spec.md#L1-L93)
-- [packages/llmhub/src/llmhub/generator/__init__.py](file://packages/llmhub/src/llmhub/generator/__init__.py#L1-L146)
+- [packages/cli/src/llmhub_cli/generator/docs/PIPELINE.md](file://packages/cli/src/llmhub_cli/generator/docs/PIPELINE.md)
+- [packages/cli/src/llmhub_cli/generator/__init__.py](file://packages/cli/src/llmhub_cli/generator/__init__.py)
 
 ## Core Data Models
 
@@ -105,8 +107,8 @@ RoleSpec --> Preferences : has
 ```
 
 **Diagram sources**
-- [packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py](file://packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py#L40-L65)
-- [packages/llmhub/src/llmhub/spec_models.py](file://packages/llmhub/src/llmhub/spec_models.py#L44-L52)
+- [packages/cli/src/llmhub_cli/generator/spec/models.py](file://packages/cli/src/llmhub_cli/generator/spec/models.py)
+- [packages/cli/src/llmhub_cli/spec_models.py](file://packages/cli/src/llmhub_cli/spec_models.py)
 
 ### RoleNeed Model (SP3)
 The `RoleNeed` model represents canonical role requirements after LLM interpretation. It contains all selection criteria needed for model matching.
@@ -145,8 +147,8 @@ RoleNeed --> Weights : derives from
 ```
 
 **Diagram sources**
-- [packages/llmhub/src/llmhub/generator/sp3_needs_schema/models.py](file://packages/llmhub/src/llmhub/generator/sp3_needs_schema/models.py#L10-L131)
-- [packages/llmhub/src/llmhub/generator/sp6_weights/models.py](file://packages/llmhub/src/llmhub/generator/sp6_weights/models.py)
+- [packages/cli/src/llmhub_cli/generator/needs/models.py](file://packages/cli/src/llmhub_cli/generator/needs/models.py)
+- [packages/cli/src/llmhub_cli/generator/selection/weights_models.py](file://packages/cli/src/llmhub_cli/generator/selection/weights_models.py)
 
 ### CanonicalModel Schema (SP4)
 The `CanonicalModel` represents the standardized view of available models from the catalog system.
@@ -191,13 +193,13 @@ CanonicalModel --> SelectionResult : selected by
 ```
 
 **Diagram sources**
-- [packages/llmhub/src/llmhub/catalog/schema.py](file://packages/llmhub/src/llmhub/catalog/schema.py#L68-L122)
-- [packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/models.py](file://packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/models.py#L12-L22)
+- [packages/cli/src/llmhub_cli/catalog/schema.py](file://packages/cli/src/llmhub_cli/catalog/schema.py)
+- [packages/cli/src/llmhub_cli/generator/selection/selector_models.py](file://packages/cli/src/llmhub_cli/generator/selection/selector_models.py)
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py](file://packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py#L1-L65)
-- [packages/llmhub/src/llmhub/generator/sp3_needs_schema/models.py](file://packages/llmhub/src/llmhub/generator/sp3_needs_schema/models.py#L1-L131)
-- [packages/llmhub/src/llmhub/catalog/schema.py](file://packages/llmhub/src/llmhub/catalog/schema.py#L1-L122)
+- [packages/cli/src/llmhub_cli/generator/spec/models.py](file://packages/cli/src/llmhub_cli/generator/spec/models.py)
+- [packages/cli/src/llmhub_cli/generator/needs/models.py](file://packages/cli/src/llmhub_cli/generator/needs/models.py)
+- [packages/cli/src/llmhub_cli/catalog/schema.py](file://packages/cli/src/llmhub_cli/catalog/schema.py)
 
 ## Step-by-Step Pipeline Analysis
 
@@ -220,7 +222,8 @@ CanonicalModel --> SelectionResult : selected by
 - Support for custom provider configurations
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py](file://packages/llmhub/src/llmhub/generator/sp1_spec_schema/models.py#L1-L65)
+- [packages/cli/src/llmhub_cli/generator/spec/models.py](file://packages/cli/src/llmhub_cli/generator/spec/models.py)
+- [packages/cli/src/llmhub_cli/generator/spec/parser.py](file://packages/cli/src/llmhub_cli/generator/spec/parser.py)
 
 ### SP2: Needs Interpreter - LLM-Based Interpretation
 
@@ -241,7 +244,7 @@ CanonicalModel --> SelectionResult : selected by
 - Error handling for LLM failures and parsing issues
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/sp2_needs_interpreter/interpreter.py](file://packages/llmhub/src/llmhub/generator/sp2_needs_interpreter/interpreter.py#L1-L92)
+- [packages/cli/src/llmhub_cli/generator/needs/interpreter.py](file://packages/cli/src/llmhub_cli/generator/needs/interpreter.py)
 
 ### SP3: Needs Schema - Canonical RoleNeed Model
 
@@ -263,7 +266,7 @@ CanonicalModel --> SelectionResult : selected by
 - Type safety and data integrity
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/sp3_needs_schema/models.py](file://packages/llmhub/src/llmhub/generator/sp3_needs_schema/models.py#L1-L131)
+- [packages/cli/src/llmhub_cli/generator/needs/models.py](file://packages/cli/src/llmhub_cli/generator/needs/models.py)
 
 ### SP4: Catalog View - Load Canonical Models
 
@@ -285,7 +288,7 @@ CanonicalModel --> SelectionResult : selected by
 - Error handling with meaningful failure messages
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/sp4_catalog_view/loader.py](file://packages/llmhub/src/llmhub/generator/sp4_catalog_view/loader.py#L1-L42)
+- [packages/cli/src/llmhub_cli/generator/catalog_view/loader.py](file://packages/cli/src/llmhub_cli/generator/catalog_view/loader.py)
 
 ### SP5: Filter Candidates - Hard Constraint Application
 
@@ -307,7 +310,7 @@ CanonicalModel --> SelectionResult : selected by
 - Support for complex multi-modal requirements
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/sp5_filter_candidates/filter.py](file://packages/llmhub/src/llmhub/generator/sp5_filter_candidates/filter.py#L1-L73)
+- [packages/cli/src/llmhub_cli/generator/selection/filter.py](file://packages/cli/src/llmhub_cli/generator/selection/filter.py)
 
 ### SP6: Weights - Scoring Weight Calculation
 
@@ -330,7 +333,7 @@ CanonicalModel --> SelectionResult : selected by
 - Importance level influence on quality weighting
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/sp6_weights/calculator.py](file://packages/llmhub/src/llmhub/generator/sp6_weights/calculator.py#L1-L73)
+- [packages/cli/src/llmhub_cli/generator/selection/weights.py](file://packages/cli/src/llmhub_cli/generator/selection/weights.py)
 
 ### SP7: Scoring Engine - Model Ranking
 
@@ -361,7 +364,7 @@ CanonicalModel --> SelectionResult : selected by
 - Performance optimization for large catalogs
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/sp7_scoring_engine/scorer.py](file://packages/llmhub/src/llmhub/generator/sp7_scoring_engine/scorer.py#L1-L166)
+- [packages/cli/src/llmhub_cli/generator/selection/scorer.py](file://packages/cli/src/llmhub_cli/generator/selection/scorer.py)
 
 ### SP8: Relaxation Engine - Constraint Relaxation
 
@@ -390,7 +393,7 @@ CanonicalModel --> SelectionResult : selected by
 - Balanced trade-offs between requirements
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/sp8_relaxation_engine/relaxer.py](file://packages/llmhub/src/llmhub/generator/sp8_relaxation_engine/relaxer.py#L1-L87)
+- [packages/cli/src/llmhub_cli/generator/selection/relaxer.py](file://packages/cli/src/llmhub_cli/generator/selection/relaxer.py)
 
 ### SP9: Selector Orchestrator - Final Selection Coordination
 
@@ -412,7 +415,7 @@ CanonicalModel --> SelectionResult : selected by
 - Error handling for critical role failures
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/orchestrator.py](file://packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/orchestrator.py#L1-L109)
+- [packages/cli/src/llmhub_cli/generator/selection/selector.py](file://packages/cli/src/llmhub_cli/generator/selection/selector.py)
 
 ### SP10: Machine Config Emitter - Runtime Configuration Generation
 
@@ -434,7 +437,8 @@ CanonicalModel --> SelectionResult : selected by
 - Configurable output formatting
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/builder.py](file://packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/builder.py#L1-L113)
+- [packages/cli/src/llmhub_cli/generator/emitter/builder.py](file://packages/cli/src/llmhub_cli/generator/emitter/builder.py)
+- [packages/cli/src/llmhub_cli/generator/emitter/models.py](file://packages/cli/src/llmhub_cli/generator/emitter/models.py)
 
 ## Extensibility and Customization
 
@@ -476,7 +480,7 @@ J --> K
 **Configuration-Driven Behavior**: Many steps support configuration options that alter their behavior without changing implementation.
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/__init__.py](file://packages/llmhub/src/llmhub/generator/__init__.py#L52-L118)
+- [packages/cli/src/llmhub_cli/generator/__init__.py](file://packages/cli/src/llmhub_cli/generator/__init__.py)
 
 ## Error Handling and Resilience
 
@@ -515,7 +519,7 @@ E --> I["Catalog loading<br/>Network failures"]
 **Fallback Values**: Default values are provided for optional components.
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/__init__.py](file://packages/llmhub/src/llmhub/generator/__init__.py#L47-L118)
+- [packages/cli/src/llmhub_cli/generator/__init__.py](file://packages/cli/src/llmhub_cli/generator/__init__.py)
 
 ## Caching and Performance
 
@@ -544,18 +548,8 @@ H["Cache Override"] --> I["Use Override Data"]
 - Automatic cache invalidation
 - Stale cache fallback for reliability
 
-### Performance Optimizations
-
-**Lazy Loading**: Components load data only when needed.
-
-**Efficient Filtering**: Early termination in filtering algorithms.
-
-**Batch Operations**: Group operations where possible.
-
-**Memory Management**: Careful memory usage for large catalogs.
-
 **Section sources**
-- [packages/llmhub/src/llmhub/catalog/cache.py](file://packages/llmhub/src/llmhub/catalog/cache.py#L37-L69)
+- [packages/cli/src/llmhub_cli/catalog/cache.py](file://packages/cli/src/llmhub_cli/catalog/cache.py)
 
 ## Integration with Runtime
 
@@ -594,7 +588,7 @@ MachineConfig --> MachineRoleMeta : contains
 ```
 
 **Diagram sources**
-- [packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/models.py](file://packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/models.py#L6-L37)
+- [packages/cli/src/llmhub_cli/generator/emitter/models.py](file://packages/cli/src/llmhub_cli/generator/emitter/models.py)
 
 ### Runtime Compatibility
 
@@ -605,7 +599,7 @@ MachineConfig --> MachineRoleMeta : contains
 **Error Handling**: Runtime provides clear error messages for configuration issues.
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/models.py](file://packages/llmhub/src/llmhub/generator/sp10_machine_config_emitter/models.py#L1-L37)
+- [packages/cli/src/llmhub_cli/generator/emitter/models.py](file://packages/cli/src/llmhub_cli/generator/emitter/models.py)
 
 ## Testing and Validation
 
@@ -635,7 +629,7 @@ End-to-end testing with:
 **Performance Testing**: Benchmarks ensure acceptable performance thresholds.
 
 **Section sources**
-- [packages/llmhub/src/llmhub/generator/spec.md](file://packages/llmhub/src/llmhub/generator/spec.md#L88-L93)
+- [packages/cli/src/llmhub_cli/generator/docs/PIPELINE.md](file://packages/cli/src/llmhub_cli/generator/docs/PIPELINE.md)
 
 ## Conclusion
 

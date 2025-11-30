@@ -6,10 +6,10 @@
 - [models.py](file://packages/llmhub_runtime/src/llmhub_runtime/models.py)
 - [config_loader.py](file://packages/llmhub_runtime/src/llmhub_runtime/config_loader.py)
 - [resolver.py](file://packages/llmhub_runtime/src/llmhub_runtime/resolver.py)
-- [schema.py](file://packages/llmhub/src/llmhub/catalog/schema.py)
-- [builder.py](file://packages/llmhub/src/llmhub/catalog/builder.py)
-- [cache.py](file://packages/llmhub/src/llmhub/catalog/cache.py)
-- [__init__.py](file://packages/llmhub/src/llmhub/generator/__init__.py)
+- [schema.py](file://packages/cli/src/llmhub_cli/catalog/schema.py)
+- [builder.py](file://packages/cli/src/llmhub_cli/catalog/builder.py)
+- [cache.py](file://packages/cli/src/llmhub_cli/catalog/cache.py)
+- [__init__.py](file://packages/cli/src/llmhub_cli/generator/__init__.py)
 - [sp9_selector_orchestrator/models.py](file://packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/models.py)
 </cite>
 
@@ -151,7 +151,7 @@ The generator module provides functionality to convert high-level specifications
 The generator module exposes several entry points through its `__init__.py` file.
 
 **Section sources**
-- [__init__.py](file://packages/llmhub/src/llmhub/generator/__init__.py#L52-L118)
+- [__init__.py](file://packages/cli/src/llmhub_cli/generator/__init__.py#L52-L118)
 
 #### generate_machine_config Function
 
@@ -193,8 +193,8 @@ The catalog system provides a comprehensive database of available LLM models wit
 The `Catalog` class represents the complete collection of available models with their metadata.
 
 **Section sources**
-- [schema.py](file://packages/llmhub/src/llmhub/catalog/schema.py#L117-L122)
-- [builder.py](file://packages/llmhub/src/llmhub/catalog/builder.py#L302-L388)
+- [schema.py](file://packages/cli/src/llmhub_cli/catalog/schema.py#L117-L122)
+- [builder.py](file://packages/cli/src/llmhub_cli/catalog/builder.py#L302-L388)
 
 #### Catalog Schema
 
@@ -297,5 +297,5 @@ The catalog system maintains backward compatibility for data models:
 
 **Section sources**
 - [__init__.py](file://packages/llmhub_runtime/src/llmhub_runtime/__init__.py#L1-L6)
-- [__init__.py](file://packages/llmhub/src/llmhub/catalog/__init__.py#L1-L17)
-- [__init__.py](file://packages/llmhub/src/llmhub/generator/__init__.py#L120-L145)
+- [__init__.py](file://packages/cli/src/llmhub_cli/catalog/__init__.py#L1-L17)
+- [__init__.py](file://packages/cli/src/llmhub_cli/generator/__init__.py#L120-L145)

@@ -14,14 +14,14 @@ help:
 	@echo ""
 
 install:
-	pip install -e packages/llmhub_runtime
-	pip install -e packages/llmhub
+	pip install -e packages/runtime
+	pip install -e packages/cli
 
 test:
 	pytest packages/ -v
 
 test-report:
-	python -m llmhub.tools.run_tests_with_report
+	python -m llmhub_cli.tools.test_reporter
 
 clean:
 	find . -type d -name "__pycache__" -exec rm -rf {} + 2>/dev/null || true
