@@ -145,6 +145,17 @@ export COHERE_API_KEY="..."
 
 You can also use a `.env` file with `python-dotenv`.
 
+#### Context7 MCP Server (Optional)
+
+For enhanced AI-assisted development with up-to-date library documentation, you can configure the Context7 MCP server:
+
+```bash
+# Optional: Get API key from https://context7.com/dashboard
+export CONTEXT7_API_KEY="your_api_key_here"
+```
+
+See [docs/CONTEXT7_MCP_INTEGRATION.md](docs/CONTEXT7_MCP_INTEGRATION.md) for complete setup instructions.
+
 ---
 
 ## Quickstart – CLI
