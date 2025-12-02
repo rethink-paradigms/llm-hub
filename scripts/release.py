@@ -136,6 +136,54 @@ def update_version_in_file(file_path: Path, old_version: str, new_version: str):
     file_path.write_text(content)
 
 
+def update_manifest_version(manifest_path: Path, new_version: str):
+    """Update tool_identity.version in AI-native manifest."""
+    content = manifest_path.read_text()
+    # Replace the first occurrence of a semver version field (tool_identity.version)
+    updated = re.sub(
+        r'(^\s*version:\s*")\d+\.\d+\.\d+("\s*$)',
+        rf'\g<1>{new_version}\g<2>',
+        content,
+        count=1,
+        flags=re.MULTILINE
+    )
+    manifest_path.write_text(updated)
+
+
+def update_ai_native_docs_version(doc_path: Path, new_version: str):
+    """Update version mentions in AI_NATIVE_DOCS.md."""
+    content = doc_path.read_text()
+    # Update "Version (synchronized with packages: x.y.z)"
+    content = re.sub(
+        r'(Version \(synchronized with packages: )\d+\.\d+\.\d+(\))',
+        rf'\g<1>{new_version}\g<2>',
+        content
+    )
+    # Update "**Version**: x.y.z"
+    content = re.sub(
+        r'(\*\*Version\*\*:\s*)\d+\.\d+\.\d+',
+        rf'\g<1>{new_version}',
+        content
+    )
+    doc_path.write_text(content)
+
+
+def sync_versions_across_docs(repo_root: Path, new_version: str):
+    """Synchronize version across AI docs and manifest."""
+    manifest = repo_root / 'llmhub.aimanifest.yaml'
+    ai_docs = repo_root / 'AI_NATIVE_DOCS.md'
+    if manifest.exists():
+        update_manifest_version(manifest, new_version)
+        print_success(f"Updated {manifest.name}")
+    else:
+        print_warning("Manifest not found; skipping version sync for manifest")
+    if ai_docs.exists():
+        update_ai_native_docs_version(ai_docs, new_version)
+        print_success(f"Updated {ai_docs.name}")
+    else:
+        print_warning("AI_NATIVE_DOCS.md not found; skipping version sync for docs")
+
+
 def clean_build_artifacts(package_dir: Path):
     """Remove build artifacts"""
     artifacts = ['build', 'dist', '*.egg-info']
@@ -299,7 +347,9 @@ def parse_arguments():
     args = {
         'bump_type': None,
         'version': None,
-        'package': None  # 'llmhub-runtime', 'llmhub', or None for both
+        'package': None,  # 'rethink-llmhub-runtime', 'rethink-llmhub', or None for both
+        'yes': False,     # auto-confirm prompts
+        'sync_only': False # perform version bump and doc sync only; skip build/upload
     }
     
     i = 1
@@ -324,6 +374,12 @@ def parse_arguments():
             i += 2
         elif arg in ['major', 'minor', 'patch']:
             args['bump_type'] = arg
+            i += 1
+        elif arg == '--yes':
+            args['yes'] = True
+            i += 1
+        elif arg == '--sync-only':
+            args['sync_only'] = True
             i += 1
         else:
             print_error(f"Invalid argument: {arg}")
@@ -370,8 +426,8 @@ def main():
     release_runtime = args['package'] is None or args['package'] == 'rethink-llmhub-runtime'
     release_llmhub = args['package'] is None or args['package'] == 'rethink-llmhub'
     
-    runtime_current = get_current_version(runtime_pyproject) if release_runtime else None
-    llmhub_current = get_current_version(llmhub_pyproject) if release_llmhub else None
+    runtime_current = get_current_version(runtime_pyproject)
+    llmhub_current = get_current_version(llmhub_pyproject)
     
     # Determine new version
     if args['version']:
@@ -398,22 +454,30 @@ def main():
         print(f"  rethink-llmhub:         {llmhub_current} → {new_version}")
     print()
     
-    if not confirm("Proceed with version bump?"):
+    if not (args.get('yes') or confirm("Proceed with version bump?")):
         print_warning("Release cancelled")
         sys.exit(0)
     
     # Update versions
     print_header("Step 1: Version Bump")
     
-    if release_runtime:
-        print_step("Updating rethink-llmhub-runtime version...")
-        update_version_in_file(runtime_pyproject, runtime_current, new_version)
-        print_success(f"Updated {runtime_pyproject.name}")
+    # Always bump both package versions to keep docs/manifests in sync
+    print_step("Updating rethink-llmhub-runtime version...")
+    update_version_in_file(runtime_pyproject, runtime_current, new_version)
+    print_success(f"Updated {runtime_pyproject.name}")
     
-    if release_llmhub:
-        print_step("Updating rethink-llmhub version...")
-        update_version_in_file(llmhub_pyproject, llmhub_current, new_version)
-        print_success(f"Updated {llmhub_pyproject.name}")
+    print_step("Updating rethink-llmhub version...")
+    update_version_in_file(llmhub_pyproject, llmhub_current, new_version)
+    print_success(f"Updated {llmhub_pyproject.name}")
+    
+    # Sync AI-native docs and manifest
+    print_step("Synchronizing AI docs and manifest versions...")
+    sync_versions_across_docs(workspace, new_version)
+    print_success("AI docs synchronized")
+    if args.get('sync_only'):
+        print_header("Sync-only mode: Skipping build and upload steps")
+        print_success(f"Version synchronized to {new_version}")
+        return
     
     # Build packages
     print_header("Step 2: Build Distribution Packages")
