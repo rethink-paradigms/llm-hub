@@ -4,7 +4,7 @@ SP6 - Weights: Weight calculation logic.
 Derives scoring weights from RoleNeed biases and preferences.
 """
 from llmhub_cli.generator.needs import RoleNeed
-from .models import Weights
+from .weights_models import Weights
 
 
 def derive_weights(role: RoleNeed) -> Weights:

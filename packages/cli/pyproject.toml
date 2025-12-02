@@ -57,6 +57,8 @@ packages = [
     "llmhub_cli.generator.selection",
     "llmhub_cli.generator.catalog_view",
     "llmhub_cli.generator.emitter",
+    "llmhub_cli.spec",
+    "llmhub_cli.runtime",
     "llmhub_cli.tools",
 ]
 

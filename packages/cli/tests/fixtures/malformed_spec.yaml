@@ -1,0 +1,12 @@
+project: test-project
+env: dev
+providers:
+  openai:
+    enabled: true
+    env_key: OPENAI_API_KEY
+roles:
+  llm.chat:
+    kind: chat
+    description: "Unclosed quote
+    preferences:
+      cost: low

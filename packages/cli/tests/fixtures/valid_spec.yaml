@@ -1,0 +1,54 @@
+project: test-project
+env: dev
+
+providers:
+  openai:
+    enabled: true
+    env_key: OPENAI_API_KEY
+  
+  anthropic:
+    enabled: true
+    env_key: ANTHROPIC_API_KEY
+  
+  google:
+    enabled: false
+    env_key: GOOGLE_API_KEY
+
+roles:
+  llm.chat:
+    kind: chat
+    description: General purpose chat interface
+    preferences:
+      cost: low
+      quality: high
+      latency: low
+      providers:
+        - openai
+        - anthropic
+    mode_params: {}
+  
+  llm.reasoning:
+    kind: chat
+    description: Advanced reasoning tasks
+    preferences:
+      cost: medium
+      quality: high
+      reasoning: high
+      providers:
+        - openai
+    mode_params:
+      temperature: 0.7
+  
+  llm.embedding:
+    kind: embedding
+    description: Text embeddings
+    preferences:
+      cost: low
+      providers:
+        - openai
+    mode_params: {}
+
+defaults:
+  providers:
+    - openai
+    - anthropic

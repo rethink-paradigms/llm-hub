@@ -1,0 +1,38 @@
+project: test-project
+env: dev
+
+providers:
+  openai:
+    env_key: OPENAI_API_KEY
+  
+  anthropic:
+    env_key: ANTHROPIC_API_KEY
+
+roles:
+  llm.chat:
+    provider: openai
+    model: gpt-4o-mini
+    mode: chat
+    params:
+      temperature: 0.7
+      max_tokens: 2000
+  
+  llm.reasoning:
+    provider: openai
+    model: o1-mini
+    mode: chat
+    params:
+      temperature: 1.0
+  
+  llm.embedding:
+    provider: openai
+    model: text-embedding-3-small
+    mode: embedding
+    params: {}
+
+defaults:
+  provider: openai
+  model: gpt-4o-mini
+  mode: chat
+  params:
+    temperature: 0.7

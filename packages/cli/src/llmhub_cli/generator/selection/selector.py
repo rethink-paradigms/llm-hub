@@ -6,11 +6,11 @@ Coordinates all selection subproblems to select models for a role.
 from typing import List
 from llmhub_cli.generator.needs import RoleNeed
 from llmhub_cli.catalog.schema import CanonicalModel
-from llmhub_cli.generator.selection import filter_candidates
-from llmhub_cli.generator.selection import derive_weights
-from llmhub_cli.generator.selection import score_candidates
-from llmhub_cli.generator.selection import relax_and_select
-from .models import SelectionResult, SelectorOptions
+from llmhub_cli.generator.selection.filter import filter_candidates
+from llmhub_cli.generator.selection.weights import derive_weights
+from llmhub_cli.generator.selection.scorer import score_candidates
+from llmhub_cli.generator.selection.relaxer import relax_and_select
+from .selector_models import SelectionResult, SelectorOptions
 
 
 def select_for_role(

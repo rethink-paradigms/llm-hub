@@ -57,6 +57,107 @@ AI Agent Task: Integrate LLM Hub to abstract OpenAI calls
 
 The following examples are planned for future releases:
 
+### Programmatic API Examples
+
+#### `catalog_programmatic_access.py`
+
+Demonstrates programmatic catalog querying and filtering without using the CLI.
+
+**Usage:**
+
+```bash
+python examples/catalog_programmatic_access.py
+```
+
+**What it demonstrates:**
+
+1. **Basic Catalog Building**: Loading the full model catalog
+2. **Provider Filtering**: Getting models from specific providers
+3. **Cost-Quality Search**: Finding cheapest high-quality models
+4. **Capability Filtering**: Finding models with specific capabilities (reasoning, vision)
+5. **Multi-Modal Models**: Querying vision-capable models
+6. **Provider Comparison**: Calculating and comparing provider statistics
+
+**Key Functions:**
+- `build_catalog()`: Build full catalog from data sources
+- `get_catalog(provider=..., tags=...)`: Filter catalog by criteria
+- Accessing model metadata: `model.cost_tier`, `model.quality_tier`, `model.tags`
+
+**Example Code:**
+
+```python
+from llmhub_cli import build_catalog, get_catalog
+
+# Get all models
+catalog = build_catalog()
+
+# Get OpenAI models only
+openai = get_catalog(provider="openai")
+
+# Get models with reasoning capability
+reasoning = get_catalog(tags=["reasoning"])
+
+# Find cheapest high-quality models
+cheap_quality = [
+    m for m in catalog.models
+    if m.cost_tier <= 2 and m.quality_tier <= 3
+]
+```
+
+#### `runtime_generation_programmatic.py`
+
+Demonstrates programmatic runtime generation from spec configurations.
+
+**Usage:**
+
+```bash
+python examples/runtime_generation_programmatic.py
+```
+
+**What it demonstrates:**
+
+1. **Basic Generation**: Converting spec to runtime programmatically
+2. **Generation with Explanations**: Understanding model selection decisions
+3. **Saving Runtime**: Persisting generated configs to files
+4. **Multi-Environment**: Generating configs for dev/staging/prod
+5. **Spec Validation**: Validating specs before generation
+6. **Programmatic Spec Creation**: Building specs in code without YAML
+
+**Key Functions:**
+- `load_spec(path)`: Load spec from YAML file
+- `validate_spec(spec)`: Validate spec structure and constraints
+- `generate_runtime_from_spec(spec, options)`: Generate runtime config
+- `save_runtime(path, config)`: Save runtime to file
+- `load_runtime(path)`: Load runtime from file
+
+**Example Code:**
+
+```python
+from llmhub_cli import (
+    load_spec,
+    generate_runtime_from_spec,
+    save_runtime,
+)
+from llmhub_cli.generator import GeneratorOptions
+from llmhub_cli.spec import validate_spec
+
+# Load and validate spec
+spec = load_spec("llmhub.spec.yaml")
+result = validate_spec(spec)
+
+if result.valid:
+    # Generate runtime with explanations
+    options = GeneratorOptions(explain=True)
+    gen_result = generate_runtime_from_spec(spec, options)
+    
+    # Save to file
+    save_runtime("llmhub.yaml", gen_result.runtime)
+    
+    # Print explanations
+    for role, explanation in gen_result.explanations.items():
+        print(f"{role}: {explanation}")
+```
+
 ### Runtime Library Examples
 
 - **Basic Usage**: Simple completion and embedding calls

@@ -115,10 +115,81 @@ def generate_machine_config(
         raise GeneratorError(f"Unexpected error in generator: {str(e)}") from e
 
 
+# Import from generator_hook for simple runtime generation API
+from ..generator_hook import (
+    generate_runtime,
+    GeneratorOptions,
+    GenerationResult,
+)
+
+
+def generate_runtime_from_spec(
+    spec,
+    options: Optional[GeneratorOptions] = None
+) -> GenerationResult:
+    """
+    Generate runtime configuration from spec configuration.
+    
+    This function converts a spec configuration (which describes what you want
+    from your LLMs) into a runtime configuration (which specifies concrete
+    provider and model selections). It uses heuristics and optionally LLM-
+    assisted selection to choose the best models for each role.
+    
+    Args:
+        spec: SpecConfig object with role definitions and preferences
+        options: Optional GeneratorOptions to control generation behavior:
+            - no_llm (bool): Use heuristic-only mode without LLM assistance
+            - explain (bool): Include explanations for model selections
+    
+    Returns:
+        GenerationResult object containing:
+            - runtime (RuntimeConfig): Generated runtime configuration with
+              concrete provider/model mappings for each role
+            - explanations (dict[str, str]): Role selection explanations
+              (only populated if options.explain=True)
+    
+    Example:
+        >>> from llmhub_cli import load_spec, generate_runtime_from_spec, save_runtime
+        >>> from llmhub_cli.generator import GeneratorOptions
+        >>> 
+        >>> # Load spec from file
+        >>> spec = load_spec("llmhub.spec.yaml")
+        >>> 
+        >>> # Generate runtime with default options
+        >>> result = generate_runtime_from_spec(spec)
+        >>> 
+        >>> # Save generated runtime
+        >>> save_runtime("llmhub.yaml", result.runtime)
+        >>> 
+        >>> # Generate with explanations
+        >>> options = GeneratorOptions(explain=True)
+        >>> result = generate_runtime_from_spec(spec, options)
+        >>> 
+        >>> # Print explanations
+        >>> for role, explanation in result.explanations.items():
+        ...     print(f"{role}: {explanation}")
+        >>> 
+        >>> # Use heuristic-only mode (no LLM calls)
+        >>> options = GeneratorOptions(no_llm=True)
+        >>> result = generate_runtime_from_spec(spec, options)
+    
+    See Also:
+        - load_spec: Load a spec configuration from file
+        - save_runtime: Save generated runtime to file
+        - GeneratorOptions: Options for controlling generation
+        - GenerationResult: Result object with runtime and explanations
+    """
+    return generate_runtime(spec, options)
+
+
 __all__ = [
     # Main API
     "generate_machine_config",
     "GeneratorError",
+    # Simple runtime generation API (for CLI-compatible usage)
+    "generate_runtime_from_spec",
+    "GeneratorOptions",
+    "GenerationResult",
     # Core models
     "ProjectSpec",
     "RoleNeed",

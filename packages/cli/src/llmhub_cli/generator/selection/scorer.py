@@ -6,7 +6,7 @@ Computes weighted scores for models and ranks them.
 from typing import List, Tuple
 from datetime import datetime
 from llmhub_cli.generator.needs import RoleNeed
-from llmhub_cli.generator.selection import Weights
+from llmhub_cli.generator.selection.weights_models import Weights
 from llmhub_cli.catalog.schema import CanonicalModel
 
 

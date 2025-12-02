@@ -6,10 +6,10 @@ Systematically relaxes constraints to find candidates.
 from typing import List, Tuple
 from copy import deepcopy
 from llmhub_cli.generator.needs import RoleNeed
-from llmhub_cli.generator.selection import Weights
+from llmhub_cli.generator.selection.weights_models import Weights
 from llmhub_cli.catalog.schema import CanonicalModel
-from llmhub_cli.generator.selection import filter_candidates
-from llmhub_cli.generator.selection import score_candidates
+from llmhub_cli.generator.selection.filter import filter_candidates
+from llmhub_cli.generator.selection.scorer import score_candidates
 
 
 def relax_and_select(

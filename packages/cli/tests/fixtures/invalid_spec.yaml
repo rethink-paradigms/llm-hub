@@ -1,0 +1,14 @@
+project: test-project
+# Missing required 'env' field
+
+providers:
+  openai:
+    enabled: true
+    env_key: OPENAI_API_KEY
+
+roles:
+  llm.chat:
+    kind: chat
+    description: Chat role
+    # Missing preferences field
+    mode_params: {}

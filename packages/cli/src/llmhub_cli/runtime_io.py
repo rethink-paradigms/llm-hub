@@ -45,6 +45,9 @@ def save_runtime(path: Path, runtime: RuntimeConfig) -> None:
         RuntimeError: If file cannot be written.
     """
     try:
+        # Create parent directories if they don't exist
+        path.parent.mkdir(parents=True, exist_ok=True)
+        
         # Convert to dict
         data = runtime.model_dump(mode='python', exclude_none=True)
         
