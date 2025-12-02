@@ -14,7 +14,7 @@ tool_identity:
   package_names:
     - rethink-llmhub
     - rethink-llmhub-runtime
-  version: "1.0.3"
+  version: "2.0.0"
   purpose: Config-driven LLM resolver and catalog system that abstracts provider/model selection into declarative configuration
   categories:
     - llm
@@ -182,12 +182,31 @@ capabilities:
       - name: created_files
         type: array[string]
         description: Paths to created configuration files
-        typical_value: ["llmhub.spec.yaml", ".env.example"]
+        typical_value: ["llmhub.spec.yaml", ".env.example", "SPEC_GUIDE.md"]
     constraints:
       - Creates files in current working directory
       - Will not overwrite existing files (safe by default)
     cost_model:
       latency: <1s (file I/O)
+  
+  - capability_id: cli.setup.project
+    intent: Interactive project setup with guided configuration wizard
+    input_contract:
+      - name: interactive_prompts
+        type: boolean
+        required: true
+        description: Guides user through provider selection and role configuration
+    output_contract:
+      - name: created_files
+        type: array[string]
+        description: Paths to created configuration files
+        typical_value: ["llmhub.spec.yaml", ".env.example", "SPEC_GUIDE.md"]
+    constraints:
+      - Creates files in current working directory
+      - Prompts for confirmation before overwriting existing files
+      - Allows multi-selection of providers and roles
+    cost_model:
+      latency: <2s (user interaction + file I/O)
   
   - capability_id: cli.generate.runtime_config
     intent: Transform spec file (llmhub.spec.yaml) into runtime config (llmhub.yaml)
@@ -355,6 +374,49 @@ capabilities:
           - errors: array[string]
     cost_model:
       latency: <1s
+  
+  - capability_id: catalog.show
+    intent: Display model catalog with optional filtering and detailed view
+    input_contract:
+      - name: provider
+        type: string
+        required: false
+        description: Filter catalog by provider name (e.g., "openai", "anthropic")
+      - name: details
+        type: boolean
+        required: false
+        description: Show detailed model information including pricing and capabilities
+    output_contract:
+      - name: display
+        type: formatted_table
+        description: Rich terminal table display of catalog entries with model metadata
+    constraints:
+      - Requires catalog to be built (triggers build if not cached)
+      - Falls back to graceful error if providers unavailable
+    cost_model:
+      latency: <500ms (cached) or 5-15s (if rebuild needed)
+  
+  - capability_id: catalog.refresh
+    intent: Force rebuild of model catalog bypassing cache
+    input_contract:
+      - name: force_refresh
+        type: boolean
+        required: true
+        default: true
+        description: Always set to true to bypass cache
+    output_contract:
+      - name: catalog
+        type: Catalog
+        description: Freshly built catalog with latest data from sources
+      - name: stats
+        type: object
+        description: Catalog statistics (total models, providers, sources)
+    constraints:
+      - Requires network access to models.dev and LMArena
+      - May fail gracefully if data sources unavailable
+    cost_model:
+      latency: 5-15s (network calls to data sources)
+      network: ~500KB download
 
 # ============================================================================
 # SECTION 3: CONFIGURATION SCHEMA
@@ -864,6 +926,53 @@ interaction_patterns:
         condition: All data sources failed
     
     code_reference: packages/cli/src/llmhub_cli/catalog/builder.py
+  
+  - pattern_id: project_initialization
+    intent: Bootstrap new LLM Hub project with configuration files
+    entry_conditions:
+      - User runs "llmhub init" or "llmhub setup" command
+      - Current working directory has write permissions
+    
+    state_transitions:
+      - step: 1
+        action: User runs "llmhub init" or "llmhub setup"
+        result: CLI command invoked
+      
+      - step: 2
+        action: Create llmhub.spec.yaml with defaults or guided inputs
+        component: commands.setup.init() or commands.setup.setup()
+        result: Spec configuration file created
+      
+      - step: 3
+        action: Generate .env.example with provider API key placeholders
+        component: setup.generate_env_example()
+        result: Environment template file created
+      
+      - step: 4
+        action: Create SPEC_GUIDE.md reference document
+        result: Quick reference guide for spec format created
+      
+      - step: 5
+        action: Display next steps to user
+        result: Terminal output with setup instructions
+    
+    exit_conditions:
+      - outcome: success
+        returns: Configuration files created in project directory
+      
+      - outcome: cancelled
+        condition: User declines to overwrite existing files
+        returns: No changes made
+      
+      - outcome: failure
+        error: FileSystemError
+        condition: Permission denied or disk full
+    
+    side_effects:
+      - Creates 3 files in current directory
+      - May prompt user for confirmation if files exist
+    
+    code_reference: packages/cli/src/llmhub_cli/commands/setup.py
 
 # ============================================================================
 # SECTION 5: DEPENDENCY GRAPH
@@ -1107,13 +1216,37 @@ performance_characteristics:
     resource_usage:
       memory: <100MB
       network: Minimal (catalog may be cached)
+  
+  - operation: project_init
+    latency:
+      typical: <1s
+      note: File I/O only, no network calls
+    resource_usage:
+      memory: <5MB
+      disk: ~10KB (3 files created)
+  
+  - operation: project_setup
+    latency:
+      typical: <2s
+      note: User interaction + file I/O
+    resource_usage:
+      memory: <5MB
+      disk: ~10KB (3 files created)
+  
+  - operation: catalog_show
+    latency:
+      cached: <500ms
+      rebuild: 5-15s (if cache invalid)
+    resource_usage:
+      memory: <50MB
+      network: 0 (cached) or ~500KB (rebuild)
 
 # ============================================================================
 # METADATA
 # ============================================================================
 
 metadata:
-  manifest_generated: "2025-12-01"
+  manifest_generated: "2025-12-03"
   manifest_author: Rethink Paradigms
   schema_compliance: aimanifest-v1.0
   human_documentation: https://github.com/rethink-paradigms/llm-hub#readme
