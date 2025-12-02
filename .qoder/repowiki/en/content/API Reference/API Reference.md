@@ -10,14 +10,16 @@
 - [builder.py](file://packages/cli/src/llmhub_cli/catalog/builder.py)
 - [cache.py](file://packages/cli/src/llmhub_cli/catalog/cache.py)
 - [__init__.py](file://packages/cli/src/llmhub_cli/generator/__init__.py)
-- [sp9_selector_orchestrator/models.py](file://packages/llmhub/src/llmhub/generator/sp9_selector_orchestrator/models.py)
+- [__init__.py](file://packages/cli/src/llmhub_cli/catalog/__init__.py)
+- [__init__.py](file://packages/cli/src/llmhub_cli/spec/__init__.py)
 </cite>
 
 ## Table of Contents
 1. [Runtime Library](#runtime-library)
 2. [Generator Module](#generator-module)
 3. [Catalog System](#catalog-system)
-4. [Versioning and Stability](#versioning-and-stability)
+4. [Spec Module](#spec-module)
+5. [Versioning and Stability](#versioning-and-stability)
 
 ## Runtime Library
 
@@ -184,6 +186,58 @@ Main end-to-end function that converts a human-written specification into a mach
 **Raises:**
 - `GeneratorError`: If any step in the generation process fails.
 
+#### generate_runtime_from_spec Function
+
+```python
+def generate_runtime_from_spec(
+    spec,
+    options: Optional[GeneratorOptions] = None
+) -> GenerationResult
+```
+
+Generates a runtime configuration from a spec configuration using either heuristic-only mode or LLM-assisted selection.
+
+**Parameters:**
+- `spec`: SpecConfig object with role definitions and preferences.
+- `options`: Optional GeneratorOptions to control generation behavior:
+  - `no_llm` (bool): Use heuristic-only mode without LLM assistance.
+  - `explain` (bool): Include explanations for model selections.
+
+**Returns:**
+- `GenerationResult` object containing:
+  - `runtime` (RuntimeConfig): Generated runtime configuration with concrete provider/model mappings for each role.
+  - `explanations` (dict[str, str]): Role selection explanations (only populated if options.explain=True).
+
+**Example:**
+```python
+>>> from llmhub_cli import load_spec, generate_runtime_from_spec, save_runtime
+>>> from llmhub_cli.generator import GeneratorOptions
+>>> 
+>>> # Load spec from file
+>>> spec = load_spec("llmhub.spec.yaml")
+>>> 
+>>> # Generate runtime with default options
+>>> result = generate_runtime_from_spec(spec)
+>>> 
+>>> # Save generated runtime
+>>> save_runtime("llmhub.yaml", result.runtime)
+>>> 
+>>> # Generate with explanations
+>>> options = GeneratorOptions(explain=True)
+>>> result = generate_runtime_from_spec(spec, options)
+>>> 
+>>> # Print explanations
+>>> for role, explanation in result.explanations.items():
+...     print(f"{role}: {explanation}")
+>>> 
+>>> # Use heuristic-only mode (no LLM calls)
+>>> options = GeneratorOptions(no_llm=True)
+>>> result = generate_runtime_from_spec(spec, options)
+```
+
+**Section sources**
+- [__init__.py](file://packages/cli/src/llmhub_cli/generator/__init__.py#L126-L183)
+
 ## Catalog System
 
 The catalog system provides a comprehensive database of available LLM models with enriched metadata, pricing, quality scores, and capabilities.
@@ -233,14 +287,62 @@ Main entry point for building the complete model catalog.
 - `Catalog` object containing all available models with enriched metadata.
 
 **Process:**
-1. Loads .env file to ensure API keys are available
-2. Checks for a fresh cached catalog
-3. Fetches data from multiple sources (any-llm, models.dev, LMArena)
-4. Fuses the data sources using ID mapping
-5. Computes global statistics for tier derivation
-6. Derives canonical models with quality, reasoning, creative, and cost tiers
-7. Saves the catalog to cache
-8. Returns the complete catalog
+1. Loads .env file to ensure API keys are available.
+2. Checks for a fresh cached catalog.
+3. Fetches data from multiple sources (any-llm, models.dev, LMArena).
+4. Fuses the data sources using ID mapping.
+5. Computes global statistics for tier derivation.
+6. Derives canonical models with quality, reasoning, creative, and cost tiers.
+7. Saves the catalog to cache.
+8. Returns the complete catalog.
+
+#### get_catalog Function
+
+```python
+def get_catalog(
+    ttl_hours: int = 24,
+    force_refresh: bool = False,
+    provider: Optional[str] = None,
+    tags: Optional[List[str]] = None
+) -> Catalog
+```
+
+Convenience function that builds the catalog and applies filtering in one call.
+
+**Parameters:**
+- `ttl_hours`: Cache TTL in hours, default 24.
+- `force_refresh`: If True, ignore cache and rebuild, default False.
+- `provider`: Optional provider name to filter by (e.g., "openai").
+- `tags`: Optional list of tags to filter by (models must have all tags).
+
+**Returns:**
+- `Catalog` object with filtered models (or all models if no filters).
+
+**Example:**
+```python
+>>> from llmhub_cli import get_catalog
+>>> 
+>>> # Get all models
+>>> catalog = get_catalog()
+>>> 
+>>> # Get all OpenAI models
+>>> openai_catalog = get_catalog(provider="openai")
+>>> print(f"Found {len(openai_catalog.models)} OpenAI models")
+>>> 
+>>> # Get models with reasoning capability
+>>> reasoning_catalog = get_catalog(tags=["reasoning"])
+>>> for model in reasoning_catalog.models:
+...     print(f"{model.provider}:{model.model_id} - Tier {model.reasoning_tier}")
+>>> 
+>>> # Get OpenAI models with vision support
+>>> vision_catalog = get_catalog(provider="openai", tags=["vision"])
+>>> 
+>>> # Force fresh rebuild with filtering
+>>> fresh_catalog = get_catalog(force_refresh=True, provider="anthropic")
+```
+
+**Section sources**
+- [__init__.py](file://packages/cli/src/llmhub_cli/catalog/__init__.py#L12-L84)
 
 #### load_cached_catalog Function
 
@@ -267,6 +369,103 @@ Clears the catalog cache.
 **Returns:**
 - `True` if cache was cleared, `False` if no cache existed.
 
+## Spec Module
+
+The spec module provides programmatic access to spec file operations, allowing developers to load, validate, and work with spec configurations without using the CLI.
+
+### Main Entry Points
+
+The spec module exposes functions through its `__init__.py` file for loading and validating specification files.
+
+**Section sources**
+- [__init__.py](file://packages/cli/src/llmhub_cli/spec/__init__.py#L30-L207)
+
+#### load_spec Function
+
+```python
+def load_spec(spec_path: Union[str, Path]) -> SpecConfig
+```
+
+Loads and validates a spec configuration from a YAML file.
+
+**Parameters:**
+- `spec_path`: Path to the spec YAML file (string or Path object).
+
+**Returns:**
+- `SpecConfig` object with validated configuration containing:
+  - `project`: Project name.
+  - `env`: Environment name (dev, staging, prod, etc.).
+  - `providers`: Dictionary of provider configurations.
+  - `roles`: Dictionary of role specifications.
+  - `defaults`: Optional default configurations.
+
+**Raises:**
+- `SpecError`: If file not found, cannot be parsed, or validation fails.
+
+**Example:**
+```python
+>>> from llmhub_cli.spec import load_spec
+>>> 
+>>> # Load spec file
+>>> spec = load_spec("llmhub.spec.yaml")
+>>> 
+>>> # Access spec properties
+>>> print(f"Project: {spec.project}")
+>>> print(f"Roles: {list(spec.roles.keys())}")
+>>> 
+>>> # Iterate through roles
+>>> for role_name, role_spec in spec.roles.items():
+...     print(f"  {role_name}: {role_spec.kind} - {role_spec.description}")
+```
+
+#### validate_spec Function
+
+```python
+def validate_spec(spec: Union[SpecConfig, str, Path]) -> ValidationResult
+```
+
+Validates a spec configuration and returns detailed results.
+
+**Parameters:**
+- `spec`: Either a `SpecConfig` object or path to a spec file.
+
+**Returns:**
+- `ValidationResult` object containing:
+  - `valid` (bool): True if spec is valid.
+  - `errors` (list[str]): List of validation error messages.
+  - `warnings` (list[str]): List of validation warnings.
+
+**Example:**
+```python
+>>> from llmhub_cli.spec import validate_spec
+>>> 
+>>> # Validate from file path
+>>> result = validate_spec("llmhub.spec.yaml")
+>>> 
+>>> if result.valid:
+...     print("Spec is valid")
+... else:
+...     print("Validation errors:")
+...     for error in result.errors:
+...         print(f"  - {error}")
+>>> 
+>>> # Validate existing SpecConfig object
+>>> from llmhub_cli.spec import load_spec
+>>> spec = load_spec("llmhub.spec.yaml")
+>>> result = validate_spec(spec)
+```
+
+#### ValidationResult Class
+
+```python
+class ValidationResult(BaseModel):
+    valid: bool
+    errors: list[str] = Field(default_factory=list)
+    warnings: list[str] = Field(default_factory=list)
+```
+
+Represents the result of spec validation with success status, errors, and warnings.
+
 ## Versioning and Stability
 
 The LLM Hub ecosystem follows semantic versioning principles with stability guarantees for public APIs.
@@ -283,8 +482,8 @@ The runtime library (`llmhub_runtime`) provides stable APIs with backward compat
 
 The generator module provides stable entry points with defined compatibility:
 
-- The `generate_machine_config` function is the primary stable interface.
-- The `ProjectSpec`, `RoleNeed`, `SelectionResult`, and `MachineConfig` models are stable.
+- The `generate_machine_config` and `generate_runtime_from_spec` functions are primary stable interfaces.
+- The `ProjectSpec`, `RoleNeed`, `SelectionResult`, `MachineConfig`, `GeneratorOptions`, and `GenerationResult` models are stable.
 - Subproblem APIs may evolve between minor versions with appropriate deprecation notices.
 
 ### Catalog System Stability
@@ -295,7 +494,16 @@ The catalog system maintains backward compatibility for data models:
 - Field additions are non-breaking and will not remove existing fields within major versions.
 - Tier derivation algorithms may be refined between versions, but the tier scale (1-5) remains consistent.
 
+### Spec Module Stability
+
+The spec module provides stable programmatic access to specification operations:
+
+- The `load_spec` and `validate_spec` functions are stable public interfaces.
+- The `SpecConfig`, `ProviderSpec`, `RoleSpec`, and `PreferencesSpec` models are stable.
+- Validation rules and error reporting through `ValidationResult` are stable.
+
 **Section sources**
 - [__init__.py](file://packages/llmhub_runtime/src/llmhub_runtime/__init__.py#L1-L6)
 - [__init__.py](file://packages/cli/src/llmhub_cli/catalog/__init__.py#L1-L17)
 - [__init__.py](file://packages/cli/src/llmhub_cli/generator/__init__.py#L120-L145)
+- [__init__.py](file://packages/cli/src/llmhub_cli/spec/__init__.py#L196-L207)

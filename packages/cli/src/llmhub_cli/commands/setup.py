@@ -155,8 +155,66 @@ def init() -> None:
     generate_env_example(spec, context.env_example_path)
     console.print(f"[green]✓ Environment example created at {context.env_example_path}[/green]")
     
+    # Write concise spec guide
+    guide_path = context.root / "SPEC_GUIDE.md"
+    guide_content = (
+        "# LLMHub Spec Guide\n\n"
+        "This short guide explains the shape of `llmhub.spec.yaml`. Keep it simple — add what you need and grow later.\n\n"
+        "## Required sections\n"
+        "- **project**: A short name for your app (text).\n"
+        "- **env**: Your environment label (e.g., `dev`, `prod`).\n"
+        "- **providers**: Available AI providers with an API key mapping.\n"
+        "- **roles**: Named roles your app uses (e.g., `llm.inference`).\n\n"
+        "## Providers\n"
+        "Each provider entry looks like this:\n\n"
+        "```yaml\n"
+        "providers:\n"
+        "  openai:\n"
+        "    enabled: true\n"
+        "    env_key: OPENAI_API_KEY\n"
+        "```\n"
+        "- **enabled**: Set `true` to allow selection.\n"
+        "- **env_key**: Name of the environment variable that holds the API key.\n\n"
+        "## Roles\n"
+        "A role describes what model you want and your preferences.\n\n"
+        "```yaml\n"
+        "roles:\n"
+        "  llm.inference:\n"
+        "    kind: chat  # one of: chat, embedding, image, audio, tool\n"
+        "    description: Main reasoning model for answers.\n"
+        "    preferences:\n"
+        "      cost: medium    # low | medium | high\n"
+        "      latency: medium # low | medium | high\n"
+        "      quality: high   # low | medium | high\n"
+        "      providers: [openai]\n"
+        "    # Optional overrides:\n"
+        "    # force_provider: openai\n"
+        "    # force_model: gpt-4o\n"
+        "    # mode_params: {temperature: 0.2}\n"
+        "```\n\n"
+        "Tips:\n"
+        "- Use `kind` to match the task (chat vs embedding, etc.).\n"
+        "- Set `preferences` to guide model selection.\n"
+        "- Use `force_provider`/`force_model` only if you must pin exact choices.\n\n"
+        "## Defaults\n"
+        "You can set global defaults for provider preference order:\n\n"
+        "```yaml\n"
+        "defaults:\n"
+        "  providers: [openai]\n"
+        "```\n\n"
+        "## What to do next\n"
+        "1) Put your API keys in `.env` using the names from `env_key`.\n"
+        "2) Edit `llmhub.spec.yaml` to add more roles as your app grows.\n"
+        "3) Run `llmhub generate` to build the runtime.\n"
+    )
+    try:
+        guide_path.write_text(guide_content)
+        console.print(f"[green]✓ Spec guide created at {guide_path}[/green]")
+    except Exception as e:
+        console.print(f"[yellow]Warning: Could not write spec guide: {e}[/yellow]")
+    
     console.print("\n[bold]Next steps:[/bold]")
-    console.print("  1. Edit llmhub.spec.yaml to add more roles")
+    console.print("  1. Review SPEC_GUIDE.md and edit llmhub.spec.yaml")
     console.print("  2. Set OPENAI_API_KEY environment variable")
     console.print("  3. Run: llmhub generate\n")
 
