@@ -126,10 +126,10 @@ def update_version_in_file(file_path: Path, old_version: str, new_version: str):
         flags=re.MULTILINE
     )
     
-    # Update dependency version patterns (e.g., llmhub-runtime>=0.1.0)
+    # Update dependency version patterns (e.g., rethink-llmhub-runtime>=0.1.0)
     content = re.sub(
-        r'llmhub-runtime>=' + re.escape(old_version),
-        f'llmhub-runtime>={new_version}',
+        r'rethink-llmhub-runtime>=' + re.escape(old_version),
+        f'rethink-llmhub-runtime>={new_version}',
         content
     )
     
@@ -317,8 +317,8 @@ def parse_arguments():
                 print_error("--package requires a package name (llmhub-runtime or llmhub)")
                 sys.exit(1)
             package = sys.argv[i + 1]
-            if package not in ['llmhub-runtime', 'llmhub']:
-                print_error(f"Invalid package: {package}. Use 'llmhub-runtime' or 'llmhub'")
+            if package not in ['rethink-llmhub-runtime', 'rethink-llmhub']:
+                print_error(f"Invalid package: {package}. Use 'rethink-llmhub-runtime' or 'rethink-llmhub'")
                 sys.exit(1)
             args['package'] = package
             i += 2
@@ -354,8 +354,8 @@ def main():
         print("  python scripts/release.py minor     # 0.1.0 -> 0.2.0 (both packages)")
         print("  python scripts/release.py major     # 0.1.0 -> 1.0.0 (both packages)")
         print("  python scripts/release.py --version 0.2.0")
-        print("  python scripts/release.py patch --package llmhub-runtime  # Single package")
-        print("  python scripts/release.py minor --package llmhub          # Single package")
+        print("  python scripts/release.py patch --package rethink-llmhub-runtime  # Single package")
+        print("  python scripts/release.py minor --package rethink-llmhub          # Single package")
         sys.exit(1)
     
     args = parse_arguments()
@@ -364,11 +364,11 @@ def main():
     check_dependencies()
     
     # Determine which packages to release
-    runtime_pyproject = workspace / 'packages/llmhub_runtime/pyproject.toml'
-    llmhub_pyproject = workspace / 'packages/llmhub/pyproject.toml'
+    runtime_pyproject = workspace / 'packages/runtime/pyproject.toml'
+    llmhub_pyproject = workspace / 'packages/cli/pyproject.toml'
     
-    release_runtime = args['package'] is None or args['package'] == 'llmhub-runtime'
-    release_llmhub = args['package'] is None or args['package'] == 'llmhub'
+    release_runtime = args['package'] is None or args['package'] == 'rethink-llmhub-runtime'
+    release_llmhub = args['package'] is None or args['package'] == 'rethink-llmhub'
     
     runtime_current = get_current_version(runtime_pyproject) if release_runtime else None
     llmhub_current = get_current_version(llmhub_pyproject) if release_llmhub else None
@@ -393,9 +393,9 @@ def main():
     
     print(f"\n{Colors.BOLD}Version Update:{Colors.END}")
     if release_runtime:
-        print(f"  llmhub-runtime: {runtime_current} → {new_version}")
+        print(f"  rethink-llmhub-runtime: {runtime_current} → {new_version}")
     if release_llmhub:
-        print(f"  llmhub:         {llmhub_current} → {new_version}")
+        print(f"  rethink-llmhub:         {llmhub_current} → {new_version}")
     print()
     
     if not confirm("Proceed with version bump?"):
@@ -406,20 +406,20 @@ def main():
     print_header("Step 1: Version Bump")
     
     if release_runtime:
-        print_step("Updating llmhub-runtime version...")
+        print_step("Updating rethink-llmhub-runtime version...")
         update_version_in_file(runtime_pyproject, runtime_current, new_version)
         print_success(f"Updated {runtime_pyproject.name}")
     
     if release_llmhub:
-        print_step("Updating llmhub version...")
+        print_step("Updating rethink-llmhub version...")
         update_version_in_file(llmhub_pyproject, llmhub_current, new_version)
         print_success(f"Updated {llmhub_pyproject.name}")
     
     # Build packages
     print_header("Step 2: Build Distribution Packages")
     
-    runtime_dir = workspace / 'packages/llmhub_runtime'
-    llmhub_dir = workspace / 'packages/llmhub'
+    runtime_dir = workspace / 'packages/runtime'
+    llmhub_dir = workspace / 'packages/cli'
     runtime_dist = runtime_dir / 'dist'
     llmhub_dist = llmhub_dir / 'dist'
     
@@ -446,12 +446,12 @@ def main():
     print(f"\n{Colors.BOLD}Distribution Packages:{Colors.END}")
     
     if release_runtime:
-        print(f"\n{Colors.CYAN}llmhub-runtime:{Colors.END}")
+        print(f"\n{Colors.CYAN}rethink-llmhub-runtime:{Colors.END}")
         for f in sorted(runtime_dist.glob("*")):
             print(f"  • {f.name}")
     
     if release_llmhub:
-        print(f"\n{Colors.CYAN}llmhub:{Colors.END}")
+        print(f"\n{Colors.CYAN}rethink-llmhub:{Colors.END}")
         for f in sorted(llmhub_dist.glob("*")):
             print(f"  • {f.name}")
     print()
@@ -465,21 +465,21 @@ def main():
     if test_first:
         # Upload to TestPyPI
         if release_runtime:
-            if not upload_to_pypi("llmhub-runtime", runtime_dist, test_pypi=True):
+            if not upload_to_pypi("rethink-llmhub-runtime", runtime_dist, test_pypi=True):
                 sys.exit(1)
         
         if release_llmhub:
-            if not upload_to_pypi("llmhub", llmhub_dist, test_pypi=True):
+            if not upload_to_pypi("rethink-llmhub", llmhub_dist, test_pypi=True):
                 sys.exit(1)
         
         print_success("TestPyPI upload complete!")
         print(f"\nTest installation with:")
         if release_runtime and release_llmhub:
-            print(f"{Colors.CYAN}pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ llmhub=={new_version}{Colors.END}\n")
+            print(f"{Colors.CYAN}pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ rethink-llmhub=={new_version}{Colors.END}\n")
         elif release_runtime:
-            print(f"{Colors.CYAN}pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ llmhub-runtime=={new_version}{Colors.END}\n")
+            print(f"{Colors.CYAN}pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ rethink-llmhub-runtime=={new_version}{Colors.END}\n")
         else:
-            print(f"{Colors.CYAN}pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ llmhub=={new_version}{Colors.END}\n")
+            print(f"{Colors.CYAN}pip install --index-url https://test.pypi.org/simple/ --extra-index-url https://pypi.org/simple/ rethink-llmhub=={new_version}{Colors.END}\n")
         
         if not confirm("Proceed with production PyPI upload?"):
             print_warning("Production upload cancelled")
@@ -487,11 +487,11 @@ def main():
     
     # Upload to production PyPI
     if release_runtime:
-        if not upload_to_pypi("llmhub-runtime", runtime_dist, test_pypi=False):
+        if not upload_to_pypi("rethink-llmhub-runtime", runtime_dist, test_pypi=False):
             sys.exit(1)
     
     if release_llmhub:
-        if not upload_to_pypi("llmhub", llmhub_dist, test_pypi=False):
+        if not upload_to_pypi("rethink-llmhub", llmhub_dist, test_pypi=False):
             sys.exit(1)
     
     # Success!
@@ -499,7 +499,7 @@ def main():
     
     print(f"{Colors.GREEN}Successfully released version {new_version} to PyPI!{Colors.END}\n")
     print(f"Installation command:")
-    print(f"{Colors.CYAN}pip install llmhub=={new_version}{Colors.END}\n")
+    print(f"{Colors.CYAN}pip install rethink-llmhub=={new_version}{Colors.END}\n")
     
     print(f"{Colors.BOLD}Next steps:{Colors.END}")
     print(f"  1. Commit version changes: git add packages/*/pyproject.toml")

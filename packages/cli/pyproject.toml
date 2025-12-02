@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "rethink-llmhub"
-version = "1.0.3"
+version = "2.0.0"
 description = "LLMHub CLI — manage LLM specs and runtime configs"
 readme = "README.md"
 authors = [
@@ -25,7 +25,7 @@ classifiers = [
 keywords = ["llm", "ai", "llmhub", "model-management", "config", "cli"]
 requires-python = ">=3.10"
 dependencies = [
-    "rethink-llmhub-runtime>=1.0.3",
+    "rethink-llmhub-runtime>=2.0.0",
     "typer>=0.9.0",
     "pyyaml>=6.0",
     "pydantic>=2.0",
