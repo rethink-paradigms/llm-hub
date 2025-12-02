@@ -8,6 +8,69 @@ LLM Hub is a production-grade system for managing large language models (LLMs) t
 
 ---
 
+## End-to-End Developer Workflow
+
+This streamlined flow prioritizes ease of use and interoperability between `rethink-llmhub` (CLI + generator) and `llmhub-runtime` (production library):
+
+### 1. Project Initialization
+
+- **Add development dependency**: Use `rethink-llmhub` only in development (not production).
+  - Pip: `pip install rethink-llmhub`
+  - Poetry: `poetry add --group dev rethink-llmhub`
+  - Optionally add to `requirements-dev.txt` or a dev group in `pyproject.toml`.
+- **Initialize git**: `git init`
+
+### 2. Setup & Configuration
+
+- Run either:
+  - `llmhub init` (quick defaults), or
+  - `llmhub setup` (guided, interactive)
+- Generated files:
+  - `llmhub.spec.yaml` — high-level roles and preferences
+  - `.env.example` — required environment variables
+  - `SPEC_GUIDE.md` — concise guide to understand and complete your spec (for devs and AI agents)
+
+### 3. Environment Setup
+
+- Copy `.env.example` to `.env` and fill in provider API keys (e.g., `OPENAI_API_KEY`, `ANTHROPIC_API_KEY`).
+- For strict validation in code, you can enable runtime checks later.
+
+### 4. Using the Runtime in Code
+
+Install the production library — in production, just install `rethink-llmhub-runtime` (module: `llmhub_runtime`) — and integrate with named roles:
+
+```python
+from llmhub_runtime import LLMHub
+
+hub = LLMHub(config_path="llmhub.yaml")
+
+# Chat completion via a descriptive role name
+response = hub.completion(
+    role="llm.inference",
+    messages=[{"role": "user", "content": "Explain quantum entanglement simply."}]
+)
+
+# Embeddings via a separate role
+emb = hub.embedding(
+    role="llm.embedding",
+    input=["hello", "world"]
+)
+```
+
+- **Keep your spec aligned**: Ensure `llmhub.spec.yaml` defines roles you reference in code (e.g., `llm.inference`, `llm.embedding`).
+- You can override parameters per call with `params_override` and attach hooks for observability.
+
+### 5. Generate Config & Catalog
+
+- **Generate runtime config** from your spec:
+  - `llmhub generate` → produces `llmhub.yaml` with concrete provider:model selections.
+- **Refresh the model catalog** (used for selection, display, and analysis):
+  - `llmhub catalog refresh`
+  - `llmhub catalog show` (add `--provider openai` or `--details` as needed)
+- Behind the scenes, the catalog is cached to JSON on disk for fast reuse. Both developers and AI agents can refer to `SPEC_GUIDE.md` while implementing and iterating.
+
+---
+
 ## What is LLM Hub?
 
 LLM Hub addresses a core challenge in LLM application development: **making model selection a configuration concern, not a code concern**.
@@ -104,7 +167,11 @@ The catalog is used by:
 ### From PyPI (when published)
 
 ```bash
-pip install rethink-llmhub rethink-llmhub-runtime
+# Development (CLI + generator)
+pip install rethink-llmhub
+
+# Production (runtime only)
+pip install rethink-llmhub-runtime
 ```
 
 ### From source (current development)
@@ -173,6 +240,7 @@ llmhub setup
 This creates:
 - `llmhub.spec.yaml`: High-level specification of roles and preferences
 - `.env.example`: Template for required environment variables
+- `SPEC_GUIDE.md`: Concise guide to help you understand and complete the spec
 
 ### 2. Configure providers
 

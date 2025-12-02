@@ -22,7 +22,8 @@
 
 ## Update Summary
 **Changes Made**   
-- Added new section on Context7 MCP Server Integration for AI-assisted development
+- Reorganized documentation into dedicated folder with new in-depth chapter for Context7 MCP Server integration
+- Added comprehensive sections on Context7 MCP Server setup, architecture, performance, and troubleshooting
 - Updated Introduction to include Context7 capabilities
 - Added Context7-related files to referenced files list
 - Enhanced Troubleshooting Guide with Context7-specific issues
@@ -125,9 +126,6 @@ I[AI-Native Manifest] --> J[AI Agents]
 J --> D
 K[Context7 MCP Server] --> L[Qoder IDE]
 L --> J
-style A fill:#f9f,stroke:#333
-style C fill:#bbf,stroke:#333
-style D fill:#f96,stroke:#333
 ```
 
 **Diagram sources**
@@ -350,11 +348,6 @@ end
 A --> P
 A --> Q
 A --> R
-style A fill:#f96,stroke:#333
-style B fill:#bbf,stroke:#333
-style P fill:#9f9,stroke:#333
-style Q fill:#9f9,stroke:#333
-style R fill:#9f9,stroke:#333
 ```
 
 **Diagram sources**

@@ -8,6 +8,11 @@
 - [.qoder/mcp.json](file://.qoder/mcp.json)
 - [setup.py](file://packages/cli/src/llmhub_cli/commands/setup.py)
 - [generator_hook.py](file://packages/cli/src/llmhub_cli/generator_hook.py)
+- [spec_models.py](file://packages/cli/src/llmhub_cli/spec_models.py)
+- [generator/__init__.py](file://packages/cli/src/llmhub_cli/generator/__init__.py)
+- [llmhub.aimanifest.yaml](file://llmhub.aimanifest.yaml)
+- [PLAN-2.md](file://PLAN-2.md)
+- [MIGRATION_SUMMARY.md](file://MIGRATION_SUMMARY.md)
 </cite>
 
 ## Table of Contents

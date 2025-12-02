@@ -3,13 +3,24 @@
 <cite>
 **Referenced Files in This Document**
 - [scripts/release.py](file://scripts/release.py)
-- [packages/llmhub/pyproject.toml](file://packages/llmhub/pyproject.toml)
-- [packages/llmhub_runtime/pyproject.toml](file://packages/llmhub_runtime/pyproject.toml)
-- [Makefile](file://Makefile)
+- [packages/cli/pyproject.toml](file://packages/cli/pyproject.toml)
+- [packages/runtime/pyproject.toml](file://packages/runtime/pyproject.toml)
 - [README.md](file://README.md)
-- [packages/llmhub/README.md](file://packages/llmhub/README.md)
-- [packages/llmhub_runtime/README.md](file://packages/llmhub_runtime/README.md)
+- [packages/cli/README.md](file://packages/cli/README.md)
+- [packages/runtime/README.md](file://packages/runtime/README.md)
+- [packages/cli/CHANGELOG.md](file://packages/cli/CHANGELOG.md)
+- [packages/runtime/CHANGELOG.md](file://packages/runtime/CHANGELOG.md)
 </cite>
+
+## Update Summary
+**Changes Made**
+- Updated all package names from `llmhub` and `llmhub-runtime` to `rethink-llmhub` and `rethink-llmhub-runtime` throughout the documentation
+- Updated version numbers to reflect the major 2.0.0 release
+- Updated installation commands and package references in all examples
+- Modified the release workflow diagram to reflect new package names
+- Updated version management section with new package naming convention
+- Updated PyPI upload process with correct package names
+- Added migration guidance for the rebranding
 
 ## Table of Contents
 1. [Introduction](#introduction)
@@ -26,9 +37,13 @@
 
 ## Introduction
 
-The LLM Hub project uses an automated release management system built around the `scripts/release.py` script, which handles the complete PyPI release process for both the `llmhub` and `llmhub_runtime` packages. This system implements semantic versioning, automates package building, performs integrity checks, and manages the upload process with proper authentication.
+The LLM Hub project uses an automated release management system built around the `scripts/release.py` script, which handles the complete PyPI release process for both the `rethink-llmhub` and `rethink-llmhub-runtime` packages. This system implements semantic versioning, automates package building, performs integrity checks, and manages the upload process with proper authentication.
 
-The release process is designed to handle both individual package releases and coordinated releases where both packages share the same version number, ensuring dependency consistency between the CLI tool and its runtime library.
+The release process is designed to handle both individual package releases and coordinated releases where both packages share the same version number, ensuring dependency consistency between the CLI tool and its runtime library. This documentation reflects the rebranding from llmhub to rethink-llmhub and the major version 2.0.0 release.
+
+**Section sources**
+- [scripts/release.py](file://scripts/release.py#L1-L522)
+- [README.md](file://README.md#L104-L108)
 
 ## Release Process Overview
 
@@ -63,9 +78,6 @@ Success --> End
 **Diagram sources**
 - [scripts/release.py](file://scripts/release.py#L335-L522)
 
-**Section sources**
-- [scripts/release.py](file://scripts/release.py#L1-L522)
-
 ## Prerequisites and Setup
 
 ### Required Dependencies
@@ -92,7 +104,7 @@ PYPI_TEST_API_TOKEN=pypi-your-test-token-here
 
 **Section sources**
 - [scripts/release.py](file://scripts/release.py#L276-L294)
-- [README.md](file://README.md#L588-L591)
+- [README.md](file://README.md#L600-L605)
 
 ## Version Management
 
@@ -108,7 +120,7 @@ CurrentVersion --> PatchBump["Patch Bump<br/>1.0.3 → 1.0.4"]
 MajorBump --> UpdateBoth["Update Both Packages"]
 MinorBump --> UpdateBoth
 PatchBump --> UpdateBoth
-UpdateBoth --> DependencyUpdate["Update llmhub-runtime>=1.0.3"]
+UpdateBoth --> DependencyUpdate["Update rethink-llmhub-runtime>=1.0.3"]
 DependencyUpdate --> FinalVersion["Final Version<br/>1.1.0"]
 ```
 
@@ -128,20 +140,20 @@ The script supports three version bumping strategies:
 
 ### Coordinated Version Updates
 
-When releasing both packages, the script ensures they share the same version number and updates the dependency constraint in the `llmhub` package:
+When releasing both packages, the script ensures they share the same version number and updates the dependency constraint in the `rethink-llmhub` package:
 
 **Before Release:**
-- `llmhub_runtime/pyproject.toml`: `version = "1.0.3"`
-- `llmhub/pyproject.toml`: `dependencies = ["llmhub-runtime>=1.0.3"]`
+- `rethink-llmhub-runtime/pyproject.toml`: `version = "1.0.3"`
+- `rethink-llmhub/pyproject.toml`: `dependencies = ["rethink-llmhub-runtime>=1.0.3"]`
 
 **After Release:**
-- `llmhub_runtime/pyproject.toml`: `version = "1.0.4"`
-- `llmhub/pyproject.toml`: `dependencies = ["llmhub-runtime>=1.0.4"]`
+- `rethink-llmhub-runtime/pyproject.toml`: `version = "1.0.4"`
+- `rethink-llmhub/pyproject.toml`: `dependencies = ["rethink-llmhub-runtime>=1.0.4"]`
 
 **Section sources**
 - [scripts/release.py](file://scripts/release.py#L117-L136)
-- [packages/llmhub/pyproject.toml](file://packages/llmhub/pyproject.toml#L27-L35)
-- [packages/llmhub_runtime/pyproject.toml](file://packages/llmhub_runtime/pyproject.toml#L27-L31)
+- [packages/cli/pyproject.toml](file://packages/cli/pyproject.toml#L27-L35)
+- [packages/runtime/pyproject.toml](file://packages/runtime/pyproject.toml#L27-L31)
 
 ## Release Workflow
 
@@ -314,7 +326,7 @@ If `.env` file is unavailable, the script will prompt for token input:
 
 **Section sources**
 - [scripts/release.py](file://scripts/release.py#L197-L220)
-- [README.md](file://README.md#L588-L591)
+- [README.md](file://README.md#L600-L605)
 
 ## Common Release Issues
 
@@ -379,7 +391,7 @@ If `.env` file is unavailable, the script will prompt for token input:
    - Major: Breaking changes, significant updates
 
 2. **Dependency Coordination**: Coordinate releases between related packages
-   - Update both `llmhub` and `llmhub_runtime` versions
+   - Update both `rethink-llmhub` and `rethink-llmhub-runtime` versions
    - Ensure dependency constraints remain valid
 
 3. **Testing Strategy**: Implement comprehensive testing
