@@ -14,7 +14,7 @@ A comprehensive, machine-first documentation manifest containing:
 
 #### Section 1: Tool Identity
 - Package names (rethink-llmhub, rethink-llmhub-runtime)
-- Version (synchronized with packages: 2.2.0)
+- Version (synchronized with packages: 2.3.0)
 - Purpose and categories
 - Runtime requirements (Python >= 3.10)
 - Repository and documentation URLs
@@ -421,7 +421,7 @@ The implementation is **production-ready**, **validated**, and **maintainable**,
 ---
 
 **Implementation Date**: December 1-3, 2025  
-**Version**: 2.2.0  
+**Version**: 2.3.0  
 **Last Updated**: December 3, 2025  
 **Status**: ✅ Complete and Validated  
 **Maintainer**: Rethink Paradigms  
